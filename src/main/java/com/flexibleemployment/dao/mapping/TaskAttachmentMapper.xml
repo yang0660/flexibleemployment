@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.flexibleemployment.dao.mapper.TaskAttachmentMapper">
+  <resultMap id="BaseResultMap" type="com.flexibleemployment.dao.entity.TaskAttachment">
+    <id column="attachment_id" jdbcType="BIGINT" property="attachmentId" />
+    <result column="task_id" jdbcType="BIGINT" property="taskId" />
+    <result column="attachment_url" jdbcType="VARCHAR" property="attachmentUrl" />
+    <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    attachment_id, task_id, attachment_url, created_at
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_task_attachment
+    where attachment_id = #{attachmentId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from t_task_attachment
+    where attachment_id = #{attachmentId,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.flexibleemployment.dao.entity.TaskAttachment">
+    insert into t_task_attachment (attachment_id, task_id, attachment_url, 
+      created_at)
+    values (#{attachmentId,jdbcType=BIGINT}, #{taskId,jdbcType=BIGINT}, #{attachmentUrl,jdbcType=VARCHAR}, 
+      #{createdAt,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.flexibleemployment.dao.entity.TaskAttachment">
+    insert into t_task_attachment
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="attachmentId != null">
+        attachment_id,
+      </if>
+      <if test="taskId != null">
+        task_id,
+      </if>
+      <if test="attachmentUrl != null">
+        attachment_url,
+      </if>
+      <if test="createdAt != null">
+        created_at,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="attachmentId != null">
+        #{attachmentId,jdbcType=BIGINT},
+      </if>
+      <if test="taskId != null">
+        #{taskId,jdbcType=BIGINT},
+      </if>
+      <if test="attachmentUrl != null">
+        #{attachmentUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="createdAt != null">
+        #{createdAt,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.flexibleemployment.dao.entity.TaskAttachment">
+    update t_task_attachment
+    <set>
+      <if test="taskId != null">
+        task_id = #{taskId,jdbcType=BIGINT},
+      </if>
+      <if test="attachmentUrl != null">
+        attachment_url = #{attachmentUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="createdAt != null">
+        created_at = #{createdAt,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where attachment_id = #{attachmentId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.flexibleemployment.dao.entity.TaskAttachment">
+    update t_task_attachment
+    set task_id = #{taskId,jdbcType=BIGINT},
+      attachment_url = #{attachmentUrl,jdbcType=VARCHAR},
+      created_at = #{createdAt,jdbcType=TIMESTAMP}
+    where attachment_id = #{attachmentId,jdbcType=BIGINT}
+  </update>
+</mapper>

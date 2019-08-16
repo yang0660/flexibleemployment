@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.flexibleemployment.dao.mapper.OrderAttachmentMapper">
+  <resultMap id="BaseResultMap" type="com.flexibleemployment.dao.entity.OrderAttachment">
+    <id column="attachment_id" jdbcType="BIGINT" property="attachmentId" />
+    <result column="order_id" jdbcType="BIGINT" property="orderId" />
+    <result column="attachment_url" jdbcType="VARCHAR" property="attachmentUrl" />
+    <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    attachment_id, order_id, attachment_url, created_at
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_order_attachment
+    where attachment_id = #{attachmentId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from t_order_attachment
+    where attachment_id = #{attachmentId,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.flexibleemployment.dao.entity.OrderAttachment">
+    insert into t_order_attachment (attachment_id, order_id, attachment_url, 
+      created_at)
+    values (#{attachmentId,jdbcType=BIGINT}, #{orderId,jdbcType=BIGINT}, #{attachmentUrl,jdbcType=VARCHAR}, 
+      #{createdAt,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.flexibleemployment.dao.entity.OrderAttachment">
+    insert into t_order_attachment
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="attachmentId != null">
+        attachment_id,
+      </if>
+      <if test="orderId != null">
+        order_id,
+      </if>
+      <if test="attachmentUrl != null">
+        attachment_url,
+      </if>
+      <if test="createdAt != null">
+        created_at,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="attachmentId != null">
+        #{attachmentId,jdbcType=BIGINT},
+      </if>
+      <if test="orderId != null">
+        #{orderId,jdbcType=BIGINT},
+      </if>
+      <if test="attachmentUrl != null">
+        #{attachmentUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="createdAt != null">
+        #{createdAt,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.flexibleemployment.dao.entity.OrderAttachment">
+    update t_order_attachment
+    <set>
+      <if test="orderId != null">
+        order_id = #{orderId,jdbcType=BIGINT},
+      </if>
+      <if test="attachmentUrl != null">
+        attachment_url = #{attachmentUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="createdAt != null">
+        created_at = #{createdAt,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where attachment_id = #{attachmentId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.flexibleemployment.dao.entity.OrderAttachment">
+    update t_order_attachment
+    set order_id = #{orderId,jdbcType=BIGINT},
+      attachment_url = #{attachmentUrl,jdbcType=VARCHAR},
+      created_at = #{createdAt,jdbcType=TIMESTAMP}
+    where attachment_id = #{attachmentId,jdbcType=BIGINT}
+  </update>
+</mapper>

@@ -1,0 +1,32 @@
+server:
+  port: 8089
+  servlet:
+    context-path: /businesstrace-web
+  compression:
+    enabled: true
+    min-response-size: 102400
+    mime-types: application/json
+
+spring:
+  application:
+    name: flexibleemployment-web
+  aop:
+    proxy-target-class: true
+
+logging:
+  level:
+    root: INFO
+    org.springframework.web.servlet.DispatcherServlet: DEBUG
+    com.flexibleemployment: DEBUG
+  file: "/usr/software/logs/flexibleemployment-web/flexibleemployment-web.log"
+#  config: classpath:logback-spring.xml
+
+mybatis:
+  type-aliases-package: com.flexibleemployment.dao.entity
+  mapper-locations: classpath*:com/flexibleemployment/dao/mapping/*.xml
+  configuration:
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+
+snowflake:
+  dataCenterId: 0
+  workerId: 0

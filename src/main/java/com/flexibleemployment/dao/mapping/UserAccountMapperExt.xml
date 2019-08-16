@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.flexibleemployment.dao.mapper.UserAccountMapperExt">
+    <resultMap id="BaseResultMap" type="com.flexibleemployment.dao.entity.UserAccount"
+               extends="com.flexibleemployment.dao.mapper.UserAccountMapper.BaseResultMap">
+    </resultMap>
+    <sql id="Base_Column_List">
+        <include refid="com.flexibleemployment.dao.mapper.UserAccountMapper.Base_Column_List"/>
+    </sql>
+    <select id="selectCount" parameterType="com.flexibleemployment.vo.request.ManageLoginReqVO"
+            resultType="java.lang.Long">
+        select
+        count(1)
+        from t_user_account
+        <where>
+            <include refid="where"/>
+        </where>
+    </select>
+    <select id="selectList" parameterType="com.flexibleemployment.vo.request.ManageLoginReqVO"
+            resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_user_account
+        <where>
+            <include refid="where"/>
+        </where>
+        limit #{offset,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
+    </select>
+
+    <select id="selectListAll" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_user_account
+    </select>
+
+
+    <sql id="where">
+        <if test="userId != null">
+            and user_id = #{userId,jdbcType=BIGINT}
+        </if>
+        <if test="userIdList != null">
+            and user_id in
+            <foreach collection="userIdList" item="iUserId" open="(" close=")" separator=",">
+                #{iUserId,jdbcType=BIGINT}
+            </foreach>
+        </if>
+        <if test="mobile != null and mobile != ''">
+            and mobile = #{mobile,jdbcType=VARCHAR}
+        </if>
+    </sql>
+
+    <select id="selectByUserNameAndType" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_user_account
+        WHERE user_name = #{userName}
+        AND user_type = #{userType}
+        AND delete_status = 0
+        limit 1
+    </select>
+
+    <select id="selectByUserName" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_user_account
+        WHERE user_name = #{userName}
+        AND delete_status = 0
+        limit 1
+    </select>
+
+</mapper>
