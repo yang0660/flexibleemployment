@@ -2,7 +2,7 @@ package com.flexibleemployment.dao.mapper;
 
 import com.flexibleemployment.dao.entity.UserAccount;
 
-public interface UserAccountMapper {
+public interface UserAccountMapper extends Mapper<UserAccount> {
     int deleteByPrimaryKey(Long userId);
 
     int insert(UserAccount record);

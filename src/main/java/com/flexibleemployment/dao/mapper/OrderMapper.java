@@ -2,7 +2,7 @@ package com.flexibleemployment.dao.mapper;
 
 import com.flexibleemployment.dao.entity.Order;
 
-public interface OrderMapper {
+public interface OrderMapper extends Mapper<Order> {
     int deleteByPrimaryKey(Long orderId);
 
     int insert(Order record);

@@ -2,7 +2,7 @@ package com.flexibleemployment.dao.mapper;
 
 import com.flexibleemployment.dao.entity.Task;
 
-public interface TaskMapper {
+public interface TaskMapper extends Mapper<Task>{
     int deleteByPrimaryKey(Long taskId);
 
     int insert(Task record);

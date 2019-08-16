@@ -1,7 +1,7 @@
 server:
   port: 8089
   servlet:
-    context-path: /businesstrace-web
+    context-path: /flexibleemployment-web
   compression:
     enabled: true
     min-response-size: 102400

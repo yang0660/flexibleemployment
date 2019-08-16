@@ -2,7 +2,7 @@ package com.flexibleemployment.dao.mapper;
 
 import com.flexibleemployment.dao.entity.WhiteList;
 
-public interface WhiteListMapper {
+public interface WhiteListMapper extends Mapper<WhiteList>{
     int deleteByPrimaryKey(String mobile);
 
     int insert(WhiteList record);

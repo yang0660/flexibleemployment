@@ -67,6 +67,11 @@ public class PermissionInterceptorAdapter extends HandlerInterceptorAdapter {
             HandlerMethod handlerMethod = (HandlerMethod) handler;
             String[] permissionArray = null;
             String[] roleArray = null;
+            //整个controller类是否都忽略认证&授权
+            Class<?> beanType = handlerMethod.getBeanType();
+            if (beanType.isAnnotationPresent(AuthIgnore.class)) {
+                return true;
+            }
             if (handlerMethod.getMethod().isAnnotationPresent(AuthIgnore.class)) {
                 return true;
             }
