@@ -24,7 +24,7 @@ public class FileUploadProperties {
     private String docExtNames; // 上传文档所允许的扩展名
     private String videoExtNames; // 上传视频所允许的扩展名
     private String voiceExtNames; // 上传音频所允许的扩展名
-
+    public static final String CONTEXT_PATH = "/file-upload";
     @Setter
     @Getter
     public static class ImageUploadProperties {

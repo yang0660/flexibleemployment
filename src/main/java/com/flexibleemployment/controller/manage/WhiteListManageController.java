@@ -3,9 +3,9 @@ package com.flexibleemployment.controller.manage;
 import com.flexibleemployment.dao.entity.WhiteList;
 import com.flexibleemployment.service.WhiteListService;
 import com.flexibleemployment.shiro.AuthIgnore;
-import com.flexibleemployment.utils.ConvertUtils;
-import com.flexibleemployment.utils.SnowflakeIdWorker;
+import com.flexibleemployment.utils.file.ExcelUtils;
 import com.flexibleemployment.vo.request.WhiteListDeleteReqVO;
+import com.flexibleemployment.vo.request.WhiteListDetailReqVO;
 import com.flexibleemployment.vo.request.WhiteListPageReqVO;
 import com.flexibleemployment.vo.request.WhiteListReqVO;
 import com.flexibleemployment.vo.response.PageResponseVO;
@@ -14,14 +14,12 @@ import com.flexibleemployment.vo.response.WhiteListRespVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Date;
+import java.io.IOException;
+import java.util.List;
 
 @RestController
 @Slf4j
@@ -42,12 +40,7 @@ public class WhiteListManageController {
     @PostMapping(value = "/queryListPage")
     @ApiOperation("列表查询-分页")
     public ResultVO<PageResponseVO<WhiteListRespVO>> queryListPage(@RequestBody WhiteListPageReqVO reqVO) {
-        PageResponseVO<WhiteListRespVO> page = whiteListService.queryPageList(reqVO);
-
-        if (page != null && !CollectionUtils.isEmpty(page.getItems())) {
-            return ResultVO.success(page);
-        }
-        return ResultVO.success(new PageResponseVO<WhiteListRespVO>());
+        return whiteListService.queryListPage(reqVO);
     }
 
 
@@ -60,19 +53,49 @@ public class WhiteListManageController {
     @PostMapping(value = "/add")
     @ApiOperation("新增")
     public ResultVO<Integer> add(@RequestBody WhiteListReqVO reqVO) {
-        synchronized (this) {
-
-            WhiteList whiteList = ConvertUtils.convert(reqVO, WhiteList.class);
-            Date now = new Date();
-            whiteList.setCreatedAt(now);
-            whiteList.setUpdatedAt(now);
-            Integer result = whiteListService.insertSelective(whiteList);
-            if (result == 0) {
-                return ResultVO.validError("save is failed!");
-            }
-            return ResultVO.success(result);
-        }
+            return ResultVO.success(whiteListService.add(reqVO));
     }
+
+    /**
+     * 导入excel新增白名单
+     *
+     * @param file
+     * @return
+     */
+    @PostMapping(value = "/addByImportExcel")
+    @ApiOperation("导入excel新增白名单")
+    public ResultVO<String> addByImportExcel(@RequestParam("file") MultipartFile file) throws IOException {
+        List<List<String>> whitelists = ExcelUtils.readRows(file.getInputStream());
+        WhiteListReqVO reqVO = new WhiteListReqVO();
+        for (int i=0;i<whitelists.size();i++){
+            int j = 0;
+            //取到第i行的数据，逐个赋值给VO
+            reqVO.setMobile(whitelists.get(i).get(j++));
+            reqVO.setUserName(whitelists.get(i).get(j++));
+            reqVO.setAddress(whitelists.get(i).get(j++));
+            reqVO.setStatus(Byte.valueOf(whitelists.get(i).get(j)));
+            //赋值好的VO插入数据库
+            Integer result = whiteListService.add(reqVO);
+            if (result!=1){
+                return ResultVO.validError("Insert row " + i + " failed!");
+            }
+        }
+        return ResultVO.success("success");
+    }
+
+
+    /**
+     * 详情查询
+     *
+     * @param reqVO
+     * @return
+     */
+    @PostMapping(value = "/queryByPrimaryKey")
+    @ApiOperation("详情查询")
+    public ResultVO<WhiteList> queryByPrimaryKey(@RequestBody WhiteListDetailReqVO reqVO) {
+        return ResultVO.success(whiteListService.queryByPrimaryKey(reqVO.getMobile()));
+    }
+
 
     /**
      * 修改
@@ -83,15 +106,7 @@ public class WhiteListManageController {
     @PostMapping(value = "/update")
     @ApiOperation("修改")
     public ResultVO<Integer> update(@RequestBody WhiteListReqVO reqVO) {
-
-        WhiteList whiteList = ConvertUtils.convert(reqVO, WhiteList.class);
-        Date now = new Date();
-        whiteList.setUpdatedAt(now);
-        Integer result = whiteListService.updateByPrimaryKeySelective(whiteList);
-        if (result == 0) {
-            return ResultVO.validError("update is failed!");
-        }
-        return ResultVO.success(result);
+        return whiteListService.update(reqVO);
 
     }
 
@@ -104,11 +119,7 @@ public class WhiteListManageController {
     @PostMapping(value = "/delete")
     @ApiOperation("删除")
     public ResultVO<Integer> delete(@RequestBody WhiteListDeleteReqVO reqVO) {
-        Integer result = whiteListService.deleteByPrimaryKey(reqVO.getMobile());
-        if (result == 0) {
-            return ResultVO.validError("delete is failed!");
-        }
-        return ResultVO.success(result);
+        return whiteListService.delete(reqVO);
     }
 
 }

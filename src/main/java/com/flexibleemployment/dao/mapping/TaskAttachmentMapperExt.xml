@@ -7,4 +7,19 @@
   <sql id="Base_Column_List">
     <include refid="com.flexibleemployment.dao.mapper.TaskAttachmentMapper.Base_Column_List"/>
   </sql>
+
+  <select id="selectByTaskId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_task_attachment
+    where task_id = #{taskId}
+    and is_deleted = 0
+  </select>
+
+  <update id="delete" parameterType="java.lang.Long">
+    update t_task_attachment
+    set
+    is_deleted = 1
+    where attachment_id = #{attachmentId}
+  </update>
 </mapper>

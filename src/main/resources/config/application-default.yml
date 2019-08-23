@@ -14,13 +14,7 @@ management:
 file-upload:
   base-url: http://localhost:8089/flexibleemployment-web/
   base-path: D:/app1/imagedata/
-  image:
-    ext-names: jpg,png,gif,tif,bmp
-    max-height: 3000
-    max-width: 3000
-    max-size: 5242880
-    small-height: 100
-    small-width: 0
+
   attachment:
     ext-names: jpg,png,jpeg,doc,docx,xlsx,xls,pdf,zip,rar
     max-size: 10485760

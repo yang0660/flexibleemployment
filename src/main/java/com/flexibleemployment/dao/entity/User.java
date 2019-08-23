@@ -3,7 +3,7 @@ package com.flexibleemployment.dao.entity;
 import java.util.Date;
 
 public class User {
-    private String unionId;
+    private String openId;
 
     private String mobile;
 
@@ -15,12 +15,14 @@ public class User {
 
     private Date updatedAt;
 
-    public String getUnionId() {
-        return unionId;
+    private Byte isWhiteList;
+
+    public String getOpenId() {
+        return openId;
     }
 
-    public void setUnionId(String unionId) {
-        this.unionId = unionId;
+    public void setOpenId(String openId) {
+        this.openId = openId;
     }
 
     public String getMobile() {
@@ -61,5 +63,13 @@ public class User {
 
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public Byte getIsWhiteList() {
+        return isWhiteList;
+    }
+
+    public void setIsWhiteList(Byte isWhiteList) {
+        this.isWhiteList = isWhiteList;
     }
 }

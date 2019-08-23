@@ -7,4 +7,69 @@
   <sql id="Base_Column_List">
     <include refid="com.flexibleemployment.dao.mapper.ProjectMapper.Base_Column_List"/>
   </sql>
+
+  <select id="selectCount" parameterType="com.flexibleemployment.vo.request.ProjectPageReqVO"
+          resultType="long">
+    select
+    count(0)
+    from
+    t_project
+    <where>
+      <if test="projectName!=null and projectName!=''">
+        project_name like concat('%',#{projectName},'%')
+      </if>
+      and is_deleted = 0
+    </where>
+
+  </select>
+
+  <select id="selectList" parameterType="com.flexibleemployment.vo.request.ProjectPageReqVO"
+          resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from
+    t_project
+    <where>
+      <if test="projectName!=null and projectName!=''">
+        project_name like concat('%',#{projectName},'%')
+      </if>
+      and is_deleted = 0
+    </where>
+    limit #{offset,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectListAll" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from
+    t_project
+    where
+    is_deleted = 0
+  </select>
+
+  <update id="delete" parameterType="java.lang.Long">
+    update t_project
+    set
+    is_deleted = 1
+    where project_id = #{projectId}
+  </update>
+
+  <resultMap id="TaskNameResultMap" type="com.flexibleemployment.vo.response.TaskNameRespVO">
+    <id column="task_id" jdbcType="BIGINT" property="taskId" />
+    <result column="task_name" jdbcType="VARCHAR" property="taskName" />
+  </resultMap>
+
+  <select id="selectTaskListByProjectId" parameterType="com.flexibleemployment.vo.request.ProjectIdReqVO" resultMap="TaskNameResultMap">
+    select
+    task_id,
+    task_name
+    from
+    t_task
+    where
+    project_id = #{projectId}
+    and status = #{status}
+    and is_deleted = 0
+  </select>
+
+
 </mapper>

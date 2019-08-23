@@ -7,4 +7,90 @@
   <sql id="Base_Column_List">
     <include refid="com.flexibleemployment.dao.mapper.TaskMapper.Base_Column_List"/>
   </sql>
+
+  <resultMap id="TaskResultMap" type="com.flexibleemployment.vo.response.TaskRespVO">
+    <id column="task_id" jdbcType="BIGINT" property="taskId" />
+    <result column="task_name" jdbcType="VARCHAR" property="taskName" />
+    <result column="project_name" jdbcType="VARCHAR" property="projectName" />
+    <result column="task_goal" jdbcType="VARCHAR" property="taskGoal" />
+    <result column="task_request" jdbcType="VARCHAR" property="taskRequest" />
+    <result column="task_desc" jdbcType="VARCHAR" property="taskDesc" />
+    <result column="amount" jdbcType="DECIMAL" property="amount" />
+    <result column="deliver_time" jdbcType="TIMESTAMP" property="deliverTime" />
+    <result column="settlement_time" jdbcType="TIMESTAMP" property="settlementTime" />
+    <result column="status" jdbcType="TINYINT" property="status" />
+    <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
+  </resultMap>
+
+  <select id="selectCount" parameterType="com.flexibleemployment.vo.request.TaskPageReqVO"
+          resultType="long">
+    select
+    count(0)
+    from
+    t_task task
+    left join t_project proj on proj.project_id = task.project_id
+    <where>
+      <if test="taskName!=null and taskName!=''">
+        task.task_name like concat('%',#{taskName},'%')
+      </if>
+      and task.is_deleted = 0
+    </where>
+  </select>
+
+  <select id="selectList" parameterType="com.flexibleemployment.vo.request.TaskPageReqVO"
+          resultMap="TaskResultMap">
+    select
+    task.task_id,
+    task.task_name,
+    proj.project_name,
+    task.task_goal,
+    task.task_request,
+    task.task_desc,
+    task.amount,
+    task.deliver_time,
+    task.settlement_time,
+    task.status,
+    task.created_at
+    from
+    t_task task
+    left join t_project proj on proj.project_id = task.project_id
+    <where>
+      <if test="taskName!=null and taskName!=''">
+        task.task_name like concat('%',#{taskName},'%')
+      </if>
+      and task.is_deleted = 0
+    </where>
+    limit #{offset,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
+  </select>
+
+  <update id="delete" parameterType="java.lang.Long">
+    update t_task
+    set
+    is_deleted = 1
+    where task_id = #{taskId}
+  </update>
+
+  <select id="selectByTaskId" parameterType="com.flexibleemployment.vo.request.TaskAppTaskIdReqVO"
+          resultMap="TaskResultMap">
+    select
+    task.task_id,
+    task.task_name,
+    proj.project_name,
+    task.task_goal,
+    task.task_request,
+    task.task_desc,
+    task.amount,
+    task.deliver_time,
+    task.settlement_time,
+    task.status,
+    task.created_at
+    from
+    t_task task
+    left join t_project proj on proj.project_id = task.project_id
+    <where>
+      task.task_id = #{taskId}
+      and task.is_deleted = 0
+    </where>
+  </select>
+
 </mapper>

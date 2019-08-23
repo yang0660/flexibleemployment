@@ -4,13 +4,14 @@
   <resultMap id="BaseResultMap" type="com.flexibleemployment.dao.entity.Order">
     <id column="order_id" jdbcType="BIGINT" property="orderId" />
     <result column="task_id" jdbcType="BIGINT" property="taskId" />
-    <result column="union_id" jdbcType="BIGINT" property="unionId" />
-    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="open_id" jdbcType="VARCHAR" property="openId" />
+    <result column="status" jdbcType="TINYINT" property="status" />
     <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
     <result column="updated_at" jdbcType="TIMESTAMP" property="updatedAt" />
+    <result column="is_deleted" jdbcType="TINYINT" property="isDeleted" />
   </resultMap>
   <sql id="Base_Column_List">
-    order_id, task_id, union_id, `status`, created_at, updated_at
+    order_id, task_id, open_id, `status`, created_at, updated_at, is_deleted
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -23,12 +24,12 @@
     where order_id = #{orderId,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.flexibleemployment.dao.entity.Order">
-    insert into t_order (order_id, task_id, union_id, 
-      `status`, created_at, updated_at
-      )
-    values (#{orderId,jdbcType=BIGINT}, #{taskId,jdbcType=BIGINT}, #{unionId,jdbcType=BIGINT}, 
-      #{status,jdbcType=VARCHAR}, #{createdAt,jdbcType=TIMESTAMP}, #{updatedAt,jdbcType=TIMESTAMP}
-      )
+    insert into t_order (order_id, task_id, open_id, 
+      `status`, created_at, updated_at, 
+      is_deleted)
+    values (#{orderId,jdbcType=BIGINT}, #{taskId,jdbcType=BIGINT}, #{openId,jdbcType=VARCHAR}, 
+      #{status,jdbcType=TINYINT}, #{createdAt,jdbcType=TIMESTAMP}, #{updatedAt,jdbcType=TIMESTAMP}, 
+      #{isDeleted,jdbcType=TINYINT})
   </insert>
   <insert id="insertSelective" parameterType="com.flexibleemployment.dao.entity.Order">
     insert into t_order
@@ -39,8 +40,8 @@
       <if test="taskId != null">
         task_id,
       </if>
-      <if test="unionId != null">
-        union_id,
+      <if test="openId != null">
+        open_id,
       </if>
       <if test="status != null">
         `status`,
@@ -51,6 +52,9 @@
       <if test="updatedAt != null">
         updated_at,
       </if>
+      <if test="isDeleted != null">
+        is_deleted,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="orderId != null">
@@ -59,17 +63,20 @@
       <if test="taskId != null">
         #{taskId,jdbcType=BIGINT},
       </if>
-      <if test="unionId != null">
-        #{unionId,jdbcType=BIGINT},
+      <if test="openId != null">
+        #{openId,jdbcType=VARCHAR},
       </if>
       <if test="status != null">
-        #{status,jdbcType=VARCHAR},
+        #{status,jdbcType=TINYINT},
       </if>
       <if test="createdAt != null">
         #{createdAt,jdbcType=TIMESTAMP},
       </if>
       <if test="updatedAt != null">
         #{updatedAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isDeleted != null">
+        #{isDeleted,jdbcType=TINYINT},
       </if>
     </trim>
   </insert>
@@ -79,11 +86,11 @@
       <if test="taskId != null">
         task_id = #{taskId,jdbcType=BIGINT},
       </if>
-      <if test="unionId != null">
-        union_id = #{unionId,jdbcType=BIGINT},
+      <if test="openId != null">
+        open_id = #{openId,jdbcType=VARCHAR},
       </if>
       <if test="status != null">
-        `status` = #{status,jdbcType=VARCHAR},
+        `status` = #{status,jdbcType=TINYINT},
       </if>
       <if test="createdAt != null">
         created_at = #{createdAt,jdbcType=TIMESTAMP},
@@ -91,16 +98,20 @@
       <if test="updatedAt != null">
         updated_at = #{updatedAt,jdbcType=TIMESTAMP},
       </if>
+      <if test="isDeleted != null">
+        is_deleted = #{isDeleted,jdbcType=TINYINT},
+      </if>
     </set>
     where order_id = #{orderId,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.flexibleemployment.dao.entity.Order">
     update t_order
     set task_id = #{taskId,jdbcType=BIGINT},
-      union_id = #{unionId,jdbcType=BIGINT},
-      `status` = #{status,jdbcType=VARCHAR},
+      open_id = #{openId,jdbcType=VARCHAR},
+      `status` = #{status,jdbcType=TINYINT},
       created_at = #{createdAt,jdbcType=TIMESTAMP},
-      updated_at = #{updatedAt,jdbcType=TIMESTAMP}
+      updated_at = #{updatedAt,jdbcType=TIMESTAMP},
+      is_deleted = #{isDeleted,jdbcType=TINYINT}
     where order_id = #{orderId,jdbcType=BIGINT}
   </update>
 </mapper>

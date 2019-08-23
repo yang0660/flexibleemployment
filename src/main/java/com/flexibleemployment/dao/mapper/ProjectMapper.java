@@ -2,7 +2,7 @@ package com.flexibleemployment.dao.mapper;
 
 import com.flexibleemployment.dao.entity.Project;
 
-public interface ProjectMapper extends Mapper<Project> {
+public interface ProjectMapper extends Mapper<Project>{
     int deleteByPrimaryKey(Long projectId);
 
     int insert(Project record);
@@ -12,6 +12,8 @@ public interface ProjectMapper extends Mapper<Project> {
     Project selectByPrimaryKey(Long projectId);
 
     int updateByPrimaryKeySelective(Project record);
+
+    int updateByPrimaryKeyWithBLOBs(Project record);
 
     int updateByPrimaryKey(Project record);
 }

@@ -11,6 +11,8 @@ public class TaskAttachment {
 
     private Date createdAt;
 
+    private Byte isDeleted;
+
     public Long getAttachmentId() {
         return attachmentId;
     }
@@ -41,5 +43,13 @@ public class TaskAttachment {
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public Byte getIsDeleted() {
+        return isDeleted;
+    }
+
+    public void setIsDeleted(Byte isDeleted) {
+        this.isDeleted = isDeleted;
     }
 }

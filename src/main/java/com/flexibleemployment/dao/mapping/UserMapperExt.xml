@@ -7,4 +7,42 @@
   <sql id="Base_Column_List">
     <include refid="com.flexibleemployment.dao.mapper.UserMapper.Base_Column_List"/>
   </sql>
+
+  <select id="selectCount" parameterType="com.flexibleemployment.vo.request.UserPageReqVO"
+          resultType="long">
+    select
+    count(0)
+    from
+    t_user
+    <where>
+      <if test="unionId!=null and unionId!=''">
+        open_id = #{openId}
+      </if>
+    </where>
+  </select>
+
+  <select id="selectList" parameterType="com.flexibleemployment.vo.request.UserPageReqVO"
+                   resultMap="BaseResultMap">
+  select
+  <include refid="Base_Column_List"/>
+  from
+  t_user
+  <where>
+    <if test="unionId!=null and unionId!=''">
+      open_id = #{openId}
+    </if>
+  </where>
+  limit #{offset,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
+</select>
+
+  <select id="checkWhiteList" parameterType="string"
+          resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from
+    t_user
+    where
+        mobile = #{mobile}
+    limit 1
+  </select>
 </mapper>

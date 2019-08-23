@@ -44,9 +44,9 @@ public class ExcelUtils {
             //获得第i行对象
             Row row = sheet.getRow(i);
             List<String> colDataList = new ArrayList<>();
-            for (int colIdx = rowHead.getFirstCellNum(); colIdx < rowHead.getLastCellNum(); colIdx++) {
+            for(int colIdx = rowHead.getFirstCellNum(); colIdx < rowHead.getLastCellNum(); colIdx ++) {
                 Cell cell = row.getCell(colIdx);
-                if (cell == null) {
+                if(cell == null) {
                     colDataList.add("");
                     continue;
                 }
@@ -57,17 +57,17 @@ public class ExcelUtils {
                     case Cell.CELL_TYPE_FORMULA:
                     case Cell.CELL_TYPE_NUMERIC:
                         if ("@".equals(cell.getCellStyle().getDataFormatString())) {
-                            colDataList.add(df.format(cell.getNumericCellValue()));
+                            colDataList.add(df.format(cell.getNumericCellValue())) ;
                         } else if ("General".equals(cell.getCellStyle()
                                 .getDataFormatString())) {
-                            colDataList.add(nf.format(cell.getNumericCellValue()));
+                            colDataList.add(nf.format(cell.getNumericCellValue())) ;
                         } else {
                             colDataList.add(sdf.format(HSSFDateUtil.getJavaDate(cell
-                                    .getNumericCellValue())));
+                                    .getNumericCellValue()))) ;
                         }
                         break;
                     case Cell.CELL_TYPE_BOOLEAN:
-                        colDataList.add(cell.getBooleanCellValue() + "");
+                        colDataList.add(cell.getBooleanCellValue() + "") ;
                         break;
                     case Cell.CELL_TYPE_BLANK:
                         colDataList.add("");

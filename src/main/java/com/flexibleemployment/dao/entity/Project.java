@@ -13,6 +13,8 @@ public class Project {
 
     private Date updatedAt;
 
+    private Byte isDeleted;
+
     public Long getProjectId() {
         return projectId;
     }
@@ -51,5 +53,13 @@ public class Project {
 
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public Byte getIsDeleted() {
+        return isDeleted;
+    }
+
+    public void setIsDeleted(Byte isDeleted) {
+        this.isDeleted = isDeleted;
     }
 }

@@ -15,14 +15,11 @@
     from
     t_white_list
     <where>
-      <if test="userName!=null and userName!=''">
-        and user_name=#{userName}
-      </if>
-      <if test="mobile != null">
-        and mobile = #{mobile}
+      <if test="arg!=null and arg!=''">
+        user_name like concat('%',#{arg},'%')
+        or mobile like concat('%',#{arg},'%')
       </if>
     </where>
-
   </select>
 
   <select id="selectList" parameterType="com.flexibleemployment.vo.request.WhiteListPageReqVO"
@@ -32,14 +29,12 @@
     from
     t_white_list
     <where>
-      <if test="userName!=null and userName!=''">
-        and user_name=#{userName}
-      </if>
-      <if test="mobile != null">
-        and mobile = #{mobile}
+      <if test="arg!=null and arg!=''">
+        user_name like concat('%',#{arg},'%')
+        or mobile like concat('%',#{arg},'%')
       </if>
     </where>
     limit #{offset,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
-
   </select>
+
 </mapper>

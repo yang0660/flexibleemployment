@@ -7,13 +7,15 @@ public class Order {
 
     private Long taskId;
 
-    private Long unionId;
+    private String openId;
 
-    private String status;
+    private Byte status;
 
     private Date createdAt;
 
     private Date updatedAt;
+
+    private Byte isDeleted;
 
     public Long getOrderId() {
         return orderId;
@@ -31,19 +33,19 @@ public class Order {
         this.taskId = taskId;
     }
 
-    public Long getUnionId() {
-        return unionId;
+    public String getOpenId() {
+        return openId;
     }
 
-    public void setUnionId(Long unionId) {
-        this.unionId = unionId;
+    public void setOpenId(String openId) {
+        this.openId = openId;
     }
 
-    public String getStatus() {
+    public Byte getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(Byte status) {
         this.status = status;
     }
 
@@ -61,5 +63,13 @@ public class Order {
 
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public Byte getIsDeleted() {
+        return isDeleted;
+    }
+
+    public void setIsDeleted(Byte isDeleted) {
+        this.isDeleted = isDeleted;
     }
 }

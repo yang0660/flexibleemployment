@@ -6,9 +6,10 @@
     <result column="task_id" jdbcType="BIGINT" property="taskId" />
     <result column="attachment_url" jdbcType="VARCHAR" property="attachmentUrl" />
     <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
+    <result column="is_deleted" jdbcType="TINYINT" property="isDeleted" />
   </resultMap>
   <sql id="Base_Column_List">
-    attachment_id, task_id, attachment_url, created_at
+    attachment_id, task_id, attachment_url, created_at, is_deleted
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -22,9 +23,9 @@
   </delete>
   <insert id="insert" parameterType="com.flexibleemployment.dao.entity.TaskAttachment">
     insert into t_task_attachment (attachment_id, task_id, attachment_url, 
-      created_at)
+      created_at, is_deleted)
     values (#{attachmentId,jdbcType=BIGINT}, #{taskId,jdbcType=BIGINT}, #{attachmentUrl,jdbcType=VARCHAR}, 
-      #{createdAt,jdbcType=TIMESTAMP})
+      #{createdAt,jdbcType=TIMESTAMP}, #{isDeleted,jdbcType=TINYINT})
   </insert>
   <insert id="insertSelective" parameterType="com.flexibleemployment.dao.entity.TaskAttachment">
     insert into t_task_attachment
@@ -41,6 +42,9 @@
       <if test="createdAt != null">
         created_at,
       </if>
+      <if test="isDeleted != null">
+        is_deleted,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="attachmentId != null">
@@ -54,6 +58,9 @@
       </if>
       <if test="createdAt != null">
         #{createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isDeleted != null">
+        #{isDeleted,jdbcType=TINYINT},
       </if>
     </trim>
   </insert>
@@ -69,6 +76,9 @@
       <if test="createdAt != null">
         created_at = #{createdAt,jdbcType=TIMESTAMP},
       </if>
+      <if test="isDeleted != null">
+        is_deleted = #{isDeleted,jdbcType=TINYINT},
+      </if>
     </set>
     where attachment_id = #{attachmentId,jdbcType=BIGINT}
   </update>
@@ -76,7 +86,8 @@
     update t_task_attachment
     set task_id = #{taskId,jdbcType=BIGINT},
       attachment_url = #{attachmentUrl,jdbcType=VARCHAR},
-      created_at = #{createdAt,jdbcType=TIMESTAMP}
+      created_at = #{createdAt,jdbcType=TIMESTAMP},
+      is_deleted = #{isDeleted,jdbcType=TINYINT}
     where attachment_id = #{attachmentId,jdbcType=BIGINT}
   </update>
 </mapper>

@@ -14,10 +14,11 @@
     <result column="status" jdbcType="TINYINT" property="status" />
     <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
     <result column="updated_at" jdbcType="TIMESTAMP" property="updatedAt" />
+    <result column="is_deleted" jdbcType="TINYINT" property="isDeleted" />
   </resultMap>
   <sql id="Base_Column_List">
     task_id, task_name, project_id, task_goal, task_request, task_desc, amount, deliver_time, 
-    settlement_time, `status`, created_at, updated_at
+    settlement_time, `status`, created_at, updated_at, is_deleted
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -33,13 +34,13 @@
     insert into t_task (task_id, task_name, project_id, 
       task_goal, task_request, task_desc, 
       amount, deliver_time, settlement_time, 
-      `status`, created_at, updated_at
-      )
+      `status`, created_at, updated_at, 
+      is_deleted)
     values (#{taskId,jdbcType=BIGINT}, #{taskName,jdbcType=VARCHAR}, #{projectId,jdbcType=BIGINT}, 
       #{taskGoal,jdbcType=VARCHAR}, #{taskRequest,jdbcType=VARCHAR}, #{taskDesc,jdbcType=VARCHAR}, 
       #{amount,jdbcType=DECIMAL}, #{deliverTime,jdbcType=TIMESTAMP}, #{settlementTime,jdbcType=TIMESTAMP}, 
-      #{status,jdbcType=TINYINT}, #{createdAt,jdbcType=TIMESTAMP}, #{updatedAt,jdbcType=TIMESTAMP}
-      )
+      #{status,jdbcType=TINYINT}, #{createdAt,jdbcType=TIMESTAMP}, #{updatedAt,jdbcType=TIMESTAMP}, 
+      #{isDeleted,jdbcType=TINYINT})
   </insert>
   <insert id="insertSelective" parameterType="com.flexibleemployment.dao.entity.Task">
     insert into t_task
@@ -80,6 +81,9 @@
       <if test="updatedAt != null">
         updated_at,
       </if>
+      <if test="isDeleted != null">
+        is_deleted,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="taskId != null">
@@ -117,6 +121,9 @@
       </if>
       <if test="updatedAt != null">
         #{updatedAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isDeleted != null">
+        #{isDeleted,jdbcType=TINYINT},
       </if>
     </trim>
   </insert>
@@ -156,6 +163,9 @@
       <if test="updatedAt != null">
         updated_at = #{updatedAt,jdbcType=TIMESTAMP},
       </if>
+      <if test="isDeleted != null">
+        is_deleted = #{isDeleted,jdbcType=TINYINT},
+      </if>
     </set>
     where task_id = #{taskId,jdbcType=BIGINT}
   </update>
@@ -171,7 +181,8 @@
       settlement_time = #{settlementTime,jdbcType=TIMESTAMP},
       `status` = #{status,jdbcType=TINYINT},
       created_at = #{createdAt,jdbcType=TIMESTAMP},
-      updated_at = #{updatedAt,jdbcType=TIMESTAMP}
+      updated_at = #{updatedAt,jdbcType=TIMESTAMP},
+      is_deleted = #{isDeleted,jdbcType=TINYINT}
     where task_id = #{taskId,jdbcType=BIGINT}
   </update>
 </mapper>
