@@ -36,40 +36,43 @@ public class UserService extends BaseService<String, User, UserMapperExt>{
     }
 
     /**
+     * 列表查询-分页
+     *
+     * @param
+     * @return
+     */
+    public User query(String openId) {
+        return mapper.selectByPrimaryKey(openId);
+    }
+
+
+    /**
      * 新增
      *
      * @param reqVO
      * @return
      */
     @Transactional
-    public ResultVO<Integer> add(UserReqVO reqVO) {
+    public Integer add(UserReqVO reqVO) {
         User user = ConvertUtils.convert(reqVO, User.class);
         user.setCreatedAt(new Date());
         user.setUpdatedAt(new Date());
-        Integer result = mapper.insertSelective(user);
-        if (result == 0) {
-            return ResultVO.validError("save is failed!");
-        }
-        return ResultVO.success(result);
+        return mapper.insertSelective(user);
     }
 
     /**
-     * 修改
+     * 更新
      *
      * @param reqVO
      * @return
      */
     @Transactional
-    public ResultVO<Integer> update(UserReqVO reqVO) {
+    public Integer update(UserReqVO reqVO) {
         User user = ConvertUtils.convert(reqVO, User.class);
         user.setUpdatedAt(new Date());
-        Integer result = mapper.updateByPrimaryKeySelective(user);
-        if (result == 0) {
-            return ResultVO.validError("update is failed!");
-        }
-        return ResultVO.success(result);
-
+        return mapper.updateByPrimaryKeySelective(user);
     }
+
 
     /**
      * 删除
@@ -78,12 +81,8 @@ public class UserService extends BaseService<String, User, UserMapperExt>{
      * @return
      */
     @Transactional
-    public ResultVO<Integer> delete(UserDeleteReqVO reqVO) {
-        Integer result = mapper.deleteByPrimaryKey(reqVO.getOpenId());
-        if (result == 0) {
-            return ResultVO.validError("delete is failed!");
-        }
-        return ResultVO.success(result);
+    public Integer delete(UserDeleteReqVO reqVO) {
+        return mapper.deleteByPrimaryKey(reqVO.getOpenId());
     }
 
     /**

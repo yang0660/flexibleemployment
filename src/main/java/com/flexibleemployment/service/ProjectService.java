@@ -4,10 +4,12 @@ import com.flexibleemployment.dao.entity.Project;
 import com.flexibleemployment.dao.mapper.ProjectMapperExt;
 import com.flexibleemployment.utils.ConvertUtils;
 import com.flexibleemployment.vo.request.ProjectDeleteReqVO;
-import com.flexibleemployment.vo.request.ProjectIdReqVO;
 import com.flexibleemployment.vo.request.ProjectPageReqVO;
 import com.flexibleemployment.vo.request.ProjectReqVO;
-import com.flexibleemployment.vo.response.*;
+import com.flexibleemployment.vo.response.PageResponseVO;
+import com.flexibleemployment.vo.response.ProjectListRespVO;
+import com.flexibleemployment.vo.response.ProjectRespVO;
+import com.flexibleemployment.vo.response.ResultVO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
@@ -49,17 +51,6 @@ public class ProjectService extends BaseService<Long, Project, ProjectMapperExt>
         }
         return ResultVO.success(resultList);
     }
-
-    /**
-     * 查询项目关联任务
-     *
-     * @param reqVO
-     * @return
-     */
-    public ResultVO<List<TaskNameRespVO>> queryTaskListByProjectId(ProjectIdReqVO reqVO){
-        return ResultVO.success(mapper.selectTaskListByProjectId(reqVO));
-    }
-
 
     /**
      * 新增

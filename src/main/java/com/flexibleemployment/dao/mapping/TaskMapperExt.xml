@@ -70,7 +70,7 @@
     where task_id = #{taskId}
   </update>
 
-  <select id="selectByTaskId" parameterType="com.flexibleemployment.vo.request.TaskAppTaskIdReqVO"
+  <select id="selectByTaskId" parameterType="com.flexibleemployment.vo.request.TaskAppReqVO"
           resultMap="TaskResultMap">
     select
     task.task_id,
@@ -88,9 +88,33 @@
     t_task task
     left join t_project proj on proj.project_id = task.project_id
     <where>
-      task.task_id = #{taskId}
+      <if test="taskId!=''">
+        and  task.task_id = #{taskId}
+      </if>
       and task.is_deleted = 0
     </where>
   </select>
 
+  <resultMap id="TaskNameResultMap" type="com.flexibleemployment.vo.response.TaskNameRespVO">
+    <id column="task_id" jdbcType="BIGINT" property="taskId" />
+    <result column="task_name" jdbcType="VARCHAR" property="taskName" />
+  </resultMap>
+
+  <select id="selectByProjectId" parameterType="com.flexibleemployment.vo.request.TaskAppReqVO" resultMap="TaskNameResultMap">
+    select
+    task_id,
+    task_name
+    from
+    t_task
+    <where>
+      <if test="projectId!=''">
+        and  project_id = #{projectId}
+      </if>
+      <if test="status!=''">
+        and status = #{status}
+      </if>
+      and is_deleted = 0
+    </where>
+
+  </select>
 </mapper>

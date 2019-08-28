@@ -68,16 +68,18 @@ public class WhiteListManageController {
         List<List<String>> whitelists = ExcelUtils.readRows(file.getInputStream());
         WhiteListReqVO reqVO = new WhiteListReqVO();
         for (int i=0;i<whitelists.size();i++){
-            int j = 0;
-            //取到第i行的数据，逐个赋值给VO
-            reqVO.setMobile(whitelists.get(i).get(j++));
-            reqVO.setUserName(whitelists.get(i).get(j++));
-            reqVO.setAddress(whitelists.get(i).get(j++));
-            reqVO.setStatus(Byte.valueOf(whitelists.get(i).get(j)));
-            //赋值好的VO插入数据库
-            Integer result = whiteListService.add(reqVO);
-            if (result!=1){
-                return ResultVO.validError("Insert row " + i + " failed!");
+            for (int j = 0; j < whitelists.get(i).size(); j++) {
+                //取到第i行的数据，逐个赋值给VO
+                reqVO.setMobile(whitelists.get(i).get(j++));
+                reqVO.setUserName(whitelists.get(i).get(j++));
+                reqVO.setAddress(whitelists.get(i).get(j++));
+                reqVO.setStatus(Byte.valueOf(whitelists.get(i).get(j)));
+                //赋值好的VO插入数据库
+                Integer result = whiteListService.add(reqVO);
+                if (result!=1){
+                    return ResultVO.validError("Insert row " + i + " failed!");
+            }
+
             }
         }
         return ResultVO.success("success");

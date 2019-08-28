@@ -1,9 +1,10 @@
 package com.flexibleemployment.controller.manage;
 
+import com.flexibleemployment.dao.entity.User;
 import com.flexibleemployment.service.UserService;
 import com.flexibleemployment.shiro.AuthIgnore;
-import com.flexibleemployment.vo.request.UserCheckReqVO;
 import com.flexibleemployment.vo.request.UserDeleteReqVO;
+import com.flexibleemployment.vo.request.UserDetailReqVO;
 import com.flexibleemployment.vo.request.UserPageReqVO;
 import com.flexibleemployment.vo.request.UserReqVO;
 import com.flexibleemployment.vo.response.PageResponseVO;
@@ -39,6 +40,18 @@ public class UserManageController {
     public ResultVO<PageResponseVO<UserRespVO>> queryListPage(@RequestBody UserPageReqVO reqVO) {
         return userService.queryListPage(reqVO);
     }
+
+    /**
+     * 详情查询
+     *
+     * @param
+     * @return
+     */
+    @PostMapping(value = "/query")
+    @ApiOperation("详情查询")
+    public ResultVO<User> query(@RequestBody UserDetailReqVO reqVO) {
+        return ResultVO.success(userService.query(reqVO.getOpenId()));
+    }
     
 
     /**
@@ -50,21 +63,22 @@ public class UserManageController {
     @PostMapping(value = "/add")
     @ApiOperation("新增")
     public ResultVO<Integer> add(@RequestBody UserReqVO reqVO) {
-            return userService.add(reqVO);
+            return ResultVO.success(userService.add(reqVO));
     }
 
     /**
-     * 修改
+     * 更新
      *
      * @param reqVO
      * @return
      */
     @PostMapping(value = "/update")
-    @ApiOperation("修改")
+    @ApiOperation("更新")
     public ResultVO<Integer> update(@RequestBody UserReqVO reqVO) {
-        return userService.update(reqVO);
+        return ResultVO.success(userService.update(reqVO));
 
     }
+
 
     /**
      * 删除
@@ -75,7 +89,7 @@ public class UserManageController {
     @PostMapping(value = "/delete")
     @ApiOperation("删除")
     public ResultVO<Integer> delete(@RequestBody UserDeleteReqVO reqVO) {
-        return userService.delete(reqVO);
+        return ResultVO.success(userService.delete(reqVO));
     }
 
 

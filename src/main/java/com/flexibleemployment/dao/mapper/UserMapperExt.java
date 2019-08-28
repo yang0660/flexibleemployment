@@ -2,7 +2,6 @@ package com.flexibleemployment.dao.mapper;
 
 import com.flexibleemployment.dao.entity.User;
 import com.flexibleemployment.vo.request.UserPageReqVO;
-import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 

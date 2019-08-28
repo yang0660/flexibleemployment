@@ -54,22 +54,5 @@
     where project_id = #{projectId}
   </update>
 
-  <resultMap id="TaskNameResultMap" type="com.flexibleemployment.vo.response.TaskNameRespVO">
-    <id column="task_id" jdbcType="BIGINT" property="taskId" />
-    <result column="task_name" jdbcType="VARCHAR" property="taskName" />
-  </resultMap>
-
-  <select id="selectTaskListByProjectId" parameterType="com.flexibleemployment.vo.request.ProjectIdReqVO" resultMap="TaskNameResultMap">
-    select
-    task_id,
-    task_name
-    from
-    t_task
-    where
-    project_id = #{projectId}
-    and status = #{status}
-    and is_deleted = 0
-  </select>
-
 
 </mapper>

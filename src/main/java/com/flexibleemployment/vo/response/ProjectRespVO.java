@@ -14,7 +14,7 @@ import java.util.Date;
 public class ProjectRespVO {
 
     @ApiModelProperty(value = "项目ID")
-    private String projectId;
+    private Long projectId;
 
     @ApiModelProperty(value = "项目名称")
     private String projectName;

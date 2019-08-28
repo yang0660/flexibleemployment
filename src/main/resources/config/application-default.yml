@@ -18,4 +18,10 @@ file-upload:
   attachment:
     ext-names: jpg,png,jpeg,doc,docx,xlsx,xls,pdf,zip,rar
     max-size: 10485760
-
+wx:
+  applet:
+    wxAppid: "wx5bd0e395f4a52cf3"  #小程序appid
+    wxAppSecret: "9f5cdf51ab5de9059106cbfce1dc0649" #小程序key
+    pushUrl: "https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send?access_token="
+    open-discern-order-url: "/pages/identifyList/detail?id="  #跳转鉴定详情地址
+    wxJscode2sessionApi: "https://api.weixin.qq.com/sns/jscode2session?appid=%s&secret=%s&js_code=%s&grant_type=authorization_code"

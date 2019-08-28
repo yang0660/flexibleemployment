@@ -94,8 +94,12 @@
     left join t_order ord on ord.task_id = task.task_id
     left join t_user `user` on `user`.open_id = ord.open_id
     <where>
-      ord.open_id = #{openId}
-      and ord.status = #{status}
+      <if test="openId!=null and openId!=''">
+        and ord.open_id = #{openId}
+      </if>
+      <if test="status!=null and status!=''">
+        and ord.status = #{status}
+      </if>
       and `user`.is_white_list = 1
       and ord.is_deleted = 0
     </where>
@@ -116,8 +120,12 @@
     left join t_order ord on ord.task_id = task.task_id
     left join t_user `user` on `user`.open_id = ord.open_id
     <where>
-      ord.open_id = #{openId}
-      and ord.status = #{status}
+      <if test="openId!=null and openId!=''">
+        and ord.open_id = #{openId}
+      </if>
+      <if test="status!=null and status!=''">
+        and ord.status = #{status}
+      </if>
       and `user`.is_white_list = 1
       and ord.is_deleted = 0
     </where>
@@ -134,7 +142,7 @@
     left join t_user `user` on `user`.open_id = ord.open_id
     <where>
       ord.open_id = #{openId}
-      and ord.status = 2
+      and ord.status = 3
       and `user`.is_white_list = 1
       and ord.is_deleted = 0
     </where>

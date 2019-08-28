@@ -14,7 +14,7 @@ import java.util.Date;
 @ApiModel(value = "任务管理列表查询")
 public class TaskRespVO {
     @ApiModelProperty(value = "任务ID")
-    private String taskId;
+    private Long taskId;
 
     @ApiModelProperty(value = "任务名称")
     private String taskName;

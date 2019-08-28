@@ -17,7 +17,7 @@ public class FileUploadConfiguration {
     private FileUploadProperties fileUploadProperties;
 
     @Bean
-    public FileUploadHandler fileUploadHandler() {
+    public FileUploadHandler fileUploadHandle() {
         return new FileUploadHandler(fileUploadProperties);
     }
 
