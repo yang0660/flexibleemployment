@@ -1,8 +1,11 @@
 package com.flexibleemployment.controller;
 
 import com.flexibleemployment.dao.entity.User;
+import com.flexibleemployment.enums.DeviceTypeEnum;
 import com.flexibleemployment.service.IWechatService;
 import com.flexibleemployment.service.UserService;
+import com.flexibleemployment.shiro.AuthIgnore;
+import com.flexibleemployment.shiro.ManageUserNamePasswordToken;
 import com.flexibleemployment.utils.ConvertUtils;
 import com.flexibleemployment.utils.WechatDecryptDataUtil;
 import com.flexibleemployment.vo.request.EncryptedDataReqVO;
@@ -13,17 +16,20 @@ import com.flexibleemployment.vo.response.UserTokenRespVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
 import java.util.Map;
 
 
 @RestController
-@RequestMapping("user/login")
+@RequestMapping("app/login")
 @Api(tags = {"用户认证登录模块"})
 @Slf4j
 public class LoginController {
@@ -40,12 +46,13 @@ public class LoginController {
      * @param wxcode
      * @return
      */
-    @PostMapping(value = "loginToken0")
+    @PostMapping(value = "/loginToken")
     @ApiOperation(value = "获取api访问令牌")
+    @AuthIgnore
     public ResultVO<UserTokenRespVO> loginForToken0(@RequestBody LoginTokenRequsetDTOExt wxcode) {
         //取得code，解密出openId，unionId，sessionKey
-        Map<String, String> code = iWechatService.wxCodeToSession(wxcode.getWxcode());
-        String openId = code.get("openid");
+        Map<String, String> sessionMap = iWechatService.wxCodeToSession(wxcode.getWxcode());
+        String openId = sessionMap.get("openid");
         //判断openId在用户表里是否已存在，不存在则以openId创建一个空用户，
         User user = userService.query(openId);
         UserTokenRespVO respVO = ConvertUtils.convert(user, UserTokenRespVO.class);
@@ -55,8 +62,15 @@ public class LoginController {
             Integer add = userService.add(reqVO);
             respVO.setOpenId(openId);
         }
-        //todo 获取token
-        respVO.setSessionKey(code.get("session_key"));
+        //获取token
+        Subject subject = SecurityUtils.getSubject();
+        ManageUserNamePasswordToken usernamePasswordDeviceToken = new ManageUserNamePasswordToken(openId,null, DeviceTypeEnum.H5);
+        //登录
+        subject.login(usernamePasswordDeviceToken);
+        String sessionId = (String) subject.getSession().getId();
+        respVO.setToken(sessionId);
+
+        respVO.setSessionKey(sessionMap.get("session_key"));
         return ResultVO.success(respVO);
     }
 

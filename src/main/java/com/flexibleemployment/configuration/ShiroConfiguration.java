@@ -3,9 +3,9 @@ package com.flexibleemployment.configuration;
 import com.flexibleemployment.shiro.CustomMobileAuthenticationFilter;
 import com.flexibleemployment.shiro.CustomWebSessionManager;
 import com.flexibleemployment.shiro.ManageRealm;
+import com.flexibleemployment.shiro.WxHashedCredentialsMatcher;
 import com.google.common.collect.Lists;
 import org.apache.shiro.authc.credential.CredentialsMatcher;
-import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.mgt.AuthorizingSecurityManager;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.realm.Realm;
@@ -105,8 +105,8 @@ public class ShiroConfiguration implements ApplicationContextAware {
 
     @Bean
     @ConditionalOnMissingBean(CredentialsMatcher.class)
-    public HashedCredentialsMatcher hashedCredentialsMatcher() {
-        HashedCredentialsMatcher credentialsMatcher = new HashedCredentialsMatcher();
+    public WxHashedCredentialsMatcher hashedCredentialsMatcher() {
+        WxHashedCredentialsMatcher credentialsMatcher = new WxHashedCredentialsMatcher();
         credentialsMatcher.setHashAlgorithmName(HASH_ALGORITH_NAME);
         credentialsMatcher.setHashIterations(HASH_ITERATIONS);
         return credentialsMatcher;

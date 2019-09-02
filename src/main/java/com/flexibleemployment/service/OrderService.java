@@ -38,6 +38,9 @@ public class OrderService extends BaseService<Long, Order, OrderMapperExt> {
     @Autowired
     TaskService taskService;
 
+    @Autowired
+    WhiteListService whiteListService;
+
     /**
      * 列表查询-分页
      *
@@ -83,8 +86,8 @@ public class OrderService extends BaseService<Long, Order, OrderMapperExt> {
      */
     @Transactional
     public ResultVO<Integer> add(OrderReqVO reqVO) {
-        User user = userService.checkWhiteList(reqVO.getMobile());
-        if (user.getIsWhiteList()!=1) {
+        User user = userService.queryByMobile(reqVO.getMobile());
+        if (user == null ||user.getIsWhiteList()==0) {
             return ResultVO.validError("not a valid whiteList member");
         }
 

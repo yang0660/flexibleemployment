@@ -3,6 +3,7 @@ package com.flexibleemployment.controller.manage;
 import com.flexibleemployment.dao.entity.WhiteList;
 import com.flexibleemployment.service.WhiteListService;
 import com.flexibleemployment.shiro.AuthIgnore;
+import com.flexibleemployment.utils.StringUtil;
 import com.flexibleemployment.utils.file.ExcelUtils;
 import com.flexibleemployment.vo.request.WhiteListDeleteReqVO;
 import com.flexibleemployment.vo.request.WhiteListDetailReqVO;
@@ -14,6 +15,7 @@ import com.flexibleemployment.vo.response.WhiteListRespVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -53,7 +55,7 @@ public class WhiteListManageController {
     @PostMapping(value = "/add")
     @ApiOperation("新增")
     public ResultVO<Integer> add(@RequestBody WhiteListReqVO reqVO) {
-            return ResultVO.success(whiteListService.add(reqVO));
+        return ResultVO.success(whiteListService.add(reqVO));
     }
 
     /**
@@ -65,24 +67,7 @@ public class WhiteListManageController {
     @PostMapping(value = "/addByImportExcel")
     @ApiOperation("导入excel新增白名单")
     public ResultVO<String> addByImportExcel(@RequestParam("file") MultipartFile file) throws IOException {
-        List<List<String>> whitelists = ExcelUtils.readRows(file.getInputStream());
-        WhiteListReqVO reqVO = new WhiteListReqVO();
-        for (int i=0;i<whitelists.size();i++){
-            for (int j = 0; j < whitelists.get(i).size(); j++) {
-                //取到第i行的数据，逐个赋值给VO
-                reqVO.setMobile(whitelists.get(i).get(j++));
-                reqVO.setUserName(whitelists.get(i).get(j++));
-                reqVO.setAddress(whitelists.get(i).get(j++));
-                reqVO.setStatus(Byte.valueOf(whitelists.get(i).get(j)));
-                //赋值好的VO插入数据库
-                Integer result = whiteListService.add(reqVO);
-                if (result!=1){
-                    return ResultVO.validError("Insert row " + i + " failed!");
-            }
-
-            }
-        }
-        return ResultVO.success("success");
+        return whiteListService.addByImportExcel(file);
     }
 
 

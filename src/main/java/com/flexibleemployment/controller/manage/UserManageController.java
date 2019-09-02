@@ -2,7 +2,6 @@ package com.flexibleemployment.controller.manage;
 
 import com.flexibleemployment.dao.entity.User;
 import com.flexibleemployment.service.UserService;
-import com.flexibleemployment.shiro.AuthIgnore;
 import com.flexibleemployment.vo.request.UserDeleteReqVO;
 import com.flexibleemployment.vo.request.UserDetailReqVO;
 import com.flexibleemployment.vo.request.UserPageReqVO;
@@ -23,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RequestMapping("/manage/user")
 @Api(tags = "用户管理", description = "/manage/user")
-@AuthIgnore
 public class UserManageController {
 
     @Autowired

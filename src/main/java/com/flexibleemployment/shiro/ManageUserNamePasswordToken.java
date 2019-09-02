@@ -11,8 +11,8 @@ public class ManageUserNamePasswordToken extends UsernamePasswordToken {
 
     private DeviceTypeEnum deviceType;
 
-    public ManageUserNamePasswordToken(String username, String password, DeviceTypeEnum deviceType) {
-        super(username, password);
+    public ManageUserNamePasswordToken(String openId, String password, DeviceTypeEnum deviceType) {
+        super(openId, password);
         this.deviceType = deviceType;
     }
 

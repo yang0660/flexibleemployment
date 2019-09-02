@@ -11,5 +11,5 @@ public interface UserMapperExt extends UserMapper{
 
     List<User> selectList(UserPageReqVO reqVO);
 
-    User checkWhiteList(String mobile);
+    User selectByMobile(String mobile);
 }

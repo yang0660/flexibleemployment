@@ -3,8 +3,10 @@ package com.flexibleemployment.service;
 import com.flexibleemployment.dao.entity.Task;
 import com.flexibleemployment.dao.entity.TaskAttachment;
 import com.flexibleemployment.dao.mapper.TaskMapperExt;
+import com.flexibleemployment.utils.BizException;
 import com.flexibleemployment.utils.ConvertUtils;
 import com.flexibleemployment.utils.SnowflakeIdWorker;
+import com.flexibleemployment.utils.file.ExcelUtils;
 import com.flexibleemployment.vo.request.*;
 import com.flexibleemployment.vo.response.PageResponseVO;
 import com.flexibleemployment.vo.response.ResultVO;
@@ -15,7 +17,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -45,7 +53,7 @@ public class TaskService extends BaseService<Long, Task, TaskMapperExt> {
                 if (new Date().after(item.getDeliverTime())) {
                     Task task = new Task();
                     task.setTaskId(item.getTaskId());
-                    task.setStatus((byte)4);
+                    task.setStatus((byte) 4);
                     item.setStatus((byte) 4);
                 }
             }
@@ -66,9 +74,9 @@ public class TaskService extends BaseService<Long, Task, TaskMapperExt> {
             if (new Date().after(respVO.getDeliverTime())) {
                 Task task = new Task();
                 task.setTaskId(respVO.getTaskId());
-                task.setStatus((byte)4);
+                task.setStatus((byte) 4);
                 mapper.updateByPrimaryKeySelective(task);
-                respVO.setStatus((byte)4);
+                respVO.setStatus((byte) 4);
             }
             return ResultVO.success(respVO);
         }
@@ -97,16 +105,20 @@ public class TaskService extends BaseService<Long, Task, TaskMapperExt> {
      */
     @Transactional
     public Integer add(TaskReqVO reqVO) {
+        Long taskId = reqVO.getTaskId();
+
         Task task = ConvertUtils.convert(reqVO, Task.class);
-        task.setTaskId(snowflakeIdWorker.nextId());
+        if (taskId == null || taskId == 0) {
+            task.setTaskId(snowflakeIdWorker.nextId());
+        }
         task.setCreatedAt(new Date());
         task.setUpdatedAt(new Date());
 
         String mobile = reqVO.getMobile();
-        if (mobile != null && mobile != "") {
+        if (mobile != null && mobile.length() != 0) {
             task.setStatus((byte) 2);
             OrderReqVO orderReqVO = new OrderReqVO();
-            orderReqVO.setTaskId(Long.valueOf(reqVO.getTaskId()));
+            orderReqVO.setTaskId(task.getTaskId());
             orderReqVO.setMobile(mobile);
             orderService.add(orderReqVO);
         }
@@ -152,5 +164,69 @@ public class TaskService extends BaseService<Long, Task, TaskMapperExt> {
         return ResultVO.success(result);
     }
 
+    /**
+     * 导入excel新增任务
+     *
+     * @return
+     */
+    @Transactional
+    public ResultVO<String> addByImportExcel(Long projectId, MultipartFile file) throws IOException, ParseException {
+        List<List<String>> tasks = ExcelUtils.readRows(file.getInputStream());
+        TaskReqVO reqVO = new TaskReqVO();
+        int count = 0;
+        int emptyCount = 0;
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+        for (int i = 0; i < tasks.size(); i++) {
+            //判断是否空行，如为空行直接返回
+            for (String task : tasks.get(i)
+            ) {
+                if (task == null || task.length() == 0) {
+                    emptyCount++;
+                }
+            }
+            if (emptyCount == tasks.get(i).size()) {
+                return ResultVO.success("success");
+            }
+            //取到第i行的数据，逐个赋值给VO
+            String taskName = tasks.get(i).get(0);
+            String taskGoal = tasks.get(i).get(1);
+            String amountString = tasks.get(i).get(4);
+            String deliverTime = tasks.get(i).get(5);
+            String settlementTime = tasks.get(i).get(6);
+            //如必填项为空，返回错误信息
+            if ((taskName == null || taskName.length() == 0) || (taskGoal == null || taskGoal.length() == 0) || (amountString == null || amountString.length() == 0) || (deliverTime == null || deliverTime.length() == 0) || (settlementTime == null || settlementTime.length() == 0)) {
+                throw new BizException("第" + (i + 1) + "行数据有误！");
+            }
+            reqVO.setTaskName(taskName);
+            reqVO.setTaskGoal(taskGoal);
+            //非必填项
+            String taskRequest = tasks.get(i).get(2);
+            if (taskRequest != null && taskRequest.length() != 0) {
+                reqVO.setTaskRequest(taskRequest);
+            }
+            String taskDesc = tasks.get(i).get(3);
+            if (taskDesc != null && taskDesc.length() != 0) {
+                reqVO.setTaskDesc(taskRequest);
+            }
+            BigDecimal amount = new BigDecimal(amountString);
+            if (!amount.equals(BigDecimal.ZERO)) {
+                reqVO.setAmount(amount);
+            }
+            reqVO.setDeliverTime(dateFormat.parse(deliverTime));
+            reqVO.setSettlementTime(dateFormat.parse(settlementTime));
+            String mobile = tasks.get(i).get(7);
+            if (mobile != null && mobile.length() != 0) {
+                reqVO.setMobile(mobile);
+            }
+            reqVO.setProjectId(projectId);
+            //赋值好的VO插入数据库
+            Integer result = add(reqVO);
+            if (result != 1) {
+                throw new BizException("第" + (i + 1) + "行插入失败！");
+            }
+            count++;
+        }
+        return ResultVO.success("success");
+    }
 
 }

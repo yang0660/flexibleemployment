@@ -1,16 +1,14 @@
 package com.flexibleemployment.service.shiro;
 
 import com.alibaba.fastjson.JSON;
-import com.flexibleemployment.dao.entity.UserAccount;
-import com.flexibleemployment.dao.mapper.UserAccountMapperExt;
+import com.flexibleemployment.dao.entity.User;
+import com.flexibleemployment.service.UserService;
 import com.flexibleemployment.shiro.UserAuthPrincipal;
 import com.flexibleemployment.shiro.UserDetailService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.shiro.authc.DisabledAccountException;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.util.Set;
 
@@ -22,43 +20,32 @@ import java.util.Set;
 public class ManagerUserDetailService implements UserDetailService {
 
     @Autowired
-    private UserAccountMapperExt userAccountMapperExt;
+    UserService userService;
+
+    @Override
+    public UserAuthPrincipal loadPrincipalByUserId(Long userId) {
+        return null;
+    }
 
     /**
      * 认证时调用，查询用户信息
      *
-     * @param userId
      * @return
      */
     @Override
-    public UserAuthPrincipal loadPrincipalByUserId(Long userId) {
+    public UserAuthPrincipal loadPrincipalByOpenId(String openId) {
         UserAuthPrincipal userAuthPrincipal = new UserAuthPrincipal();
-        UserAccount user = userAccountMapperExt.selectByPrimaryKey(userId);
+        User user = userService.selectByPrimaryKey(openId);
         if (user != null) {
-            //用户未注册
-            if (StringUtils.isEmpty(user.getPassword())) {
-                throw new DisabledAccountException();
-                //状态正常
-            } else {
-                userAuthPrincipal.setPrincipal(String.valueOf(user.getUserId()));
-                userAuthPrincipal.setCredentials(user.getPassword());
-                userAuthPrincipal.setSalt(user.getSalt());
-                userAuthPrincipal.setUserName(user.getUserName());
-                userAuthPrincipal.setReserve("");          //业务保留域，传递手机号
-            }
+            userAuthPrincipal.setPrincipal(String.valueOf(user.getOpenId()));
+            userAuthPrincipal.setReserve("");          //业务保留域，传递手机号
         } else {
             //用户不存在
             throw new UnknownAccountException();
         }
-        log.info("登录成功===》" + JSON.toJSONString(userAuthPrincipal));
+        log.info("登录===》" + JSON.toJSONString(userAuthPrincipal));
         return userAuthPrincipal;
     }
-
-    @Override
-    public UserAuthPrincipal loadPrincipalByOpenId(String openId, Byte platformId) {
-        return null;
-    }
-
 
     /**
      * 授权时调用，查询用户角色列表

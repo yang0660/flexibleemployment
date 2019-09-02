@@ -1,6 +1,7 @@
 package com.flexibleemployment.service;
 
 import com.flexibleemployment.dao.entity.User;
+import com.flexibleemployment.dao.entity.WhiteList;
 import com.flexibleemployment.dao.mapper.UserMapperExt;
 import com.flexibleemployment.utils.ConvertUtils;
 import com.flexibleemployment.vo.request.UserDeleteReqVO;
@@ -11,6 +12,7 @@ import com.flexibleemployment.vo.response.ResultVO;
 import com.flexibleemployment.vo.response.UserRespVO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +22,8 @@ import java.util.Date;
 @Slf4j
 public class UserService extends BaseService<String, User, UserMapperExt>{
 
+    @Autowired
+    WhiteListService whiteListService;
     /**
      * 列表查询-分页
      *
@@ -57,6 +61,10 @@ public class UserService extends BaseService<String, User, UserMapperExt>{
         User user = ConvertUtils.convert(reqVO, User.class);
         user.setCreatedAt(new Date());
         user.setUpdatedAt(new Date());
+        WhiteList whiteList =  whiteListService.queryByPrimaryKey(reqVO.getMobile());
+        if (whiteList!=null) {
+           user.setIsWhiteList((byte)1);
+        }
         return mapper.insertSelective(user);
     }
 
@@ -86,12 +94,12 @@ public class UserService extends BaseService<String, User, UserMapperExt>{
     }
 
     /**
-     * 检查是不是白名单成员
+     * 详情查询-手机号码
      *
      * @param mobile
      * @return
      */
-    public User checkWhiteList(String mobile) {
-        return mapper.checkWhiteList(mobile);
+    public User queryByMobile(String mobile) {
+        return mapper.selectByMobile(mobile);
     }
 }

@@ -37,8 +37,8 @@ public class UserAccountService extends BaseService<Long, UserAccount, UserAccou
         ResultVO result = null;
         Subject subject = SecurityUtils.getSubject();
         try {
-            ManageUserNamePasswordToken usernamePasswordDeviceToken = new ManageUserNamePasswordToken(String.valueOf(user.getUserId()), password, DeviceTypeEnum.H5);
-            subject.login(usernamePasswordDeviceToken);
+            /*ManageUserNamePasswordToken usernamePasswordDeviceToken = new ManageUserNamePasswordToken(String.valueOf(user.getUserId()), password, DeviceTypeEnum.H5);
+            subject.login(usernamePasswordDeviceToken);*/
 
             //登录成功
             LoginRespVO loginRespVO = ConvertUtils.convert(user, LoginRespVO.class);

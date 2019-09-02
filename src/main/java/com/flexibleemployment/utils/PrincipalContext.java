@@ -1,5 +1,6 @@
 package com.flexibleemployment.utils;
 
+import com.flexibleemployment.dao.entity.User;
 import com.flexibleemployment.dao.entity.UserAccount;
 import com.flexibleemployment.shiro.UserAuthPrincipal;
 import com.flexibleemployment.vo.response.ResultVO;
@@ -22,16 +23,6 @@ public class PrincipalContext {
     }
 
     /**
-     * 获取当前登录用户ID
-     *
-     * @return
-     */
-    public static Long getCurrentUserId() {
-        UserAuthPrincipal userPrincipal = getUserPrincipal();
-        return null == userPrincipal ? null : Long.valueOf(userPrincipal.getPrincipal());
-    }
-
-    /**
      * 获取当前登录用户名
      *
      * @return
@@ -46,53 +37,4 @@ public class PrincipalContext {
         Preconditions.checkNotNull(sessionId, "user must be authenticated before call this method.");
         return sessionId.toString();
     }
-
-    public static ResultVO checkManageUser(UserAccount userAccount) {
-        ResultVO result = null;
-        if (userAccount == null) {
-            return ResultVO.validError("该用户不存在!");
-        }
-
-        return result;
-    }
-
-    public static ResultVO checkAppUser(UserAccount userAccount) {
-        ResultVO result = null;
-        if (userAccount == null) {
-            return ResultVO.validError("该用户不存在!");
-        }
-        if (StringUtils.isEmpty(userAccount.getPassword())) {
-            result = ResultVO.validError("用户未注册!");
-            result.setRespCode(ResultVO.UNREGISTER_ERROR_CODE);
-            return result;
-        }
-
-        return result;
-    }
-
-    public static ResultVO checkAppWxUser(UserAccount userAccount) {
-        ResultVO result = null;
-        if (userAccount == null) {
-            result = ResultVO.validError("请先绑定帐号!");
-            result.setRespCode(ResultVO.UNBIND_ERROR_CODE); //未绑定APP帐号
-            return result;
-        }
-        if (StringUtils.isEmpty(userAccount.getPassword())) {
-            return ResultVO.validError("用户未注册!");
-        }
-
-        return result;
-    }
-
-    /**
-     * 用户密码加密
-     *
-     * @param password
-     * @param salt
-     * @return
-     */
-    public static String getMd5HashPwd(String password, String salt) {
-        return new Md5Hash(password, salt, 3).toString(); //迭代次数为3
-    }
-
 }

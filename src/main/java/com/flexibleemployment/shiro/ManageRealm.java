@@ -79,13 +79,11 @@ public class ManageRealm extends AuthorizingRealm implements ApplicationListener
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
         ManageUserNamePasswordToken tk = (ManageUserNamePasswordToken) token;
         SimpleAuthenticationInfo authenticationInfo = null;
-        String userIdStr = String.valueOf(tk.getPrincipal());
-        UserAuthPrincipal userAuthPrincipal = managerUserDetailService.loadPrincipalByUserId(Long.valueOf(userIdStr));
+        UserAuthPrincipal userAuthPrincipal = managerUserDetailService.loadPrincipalByOpenId(String.valueOf(tk.getPrincipal()));
         if (userAuthPrincipal != null) {
             userAuthPrincipal.setDeviceType(tk.getDeviceType());
-            userAuthPrincipal.setReserve("manage");
+            userAuthPrincipal.setReserve("wxapp");
             authenticationInfo = new SimpleAuthenticationInfo(userAuthPrincipal, userAuthPrincipal.getCredentials(), REALM_NAME);
-            authenticationInfo.setCredentialsSalt(new CustomByteSource(userAuthPrincipal.getSalt()));
         }
         return authenticationInfo;
     }

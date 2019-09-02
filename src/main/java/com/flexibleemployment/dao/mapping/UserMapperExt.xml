@@ -35,7 +35,7 @@
   limit #{offset,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
 </select>
 
-  <select id="checkWhiteList" parameterType="string"
+  <select id="selectByMobile" parameterType="string"
           resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List"/>

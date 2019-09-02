@@ -9,7 +9,7 @@ public interface UserDetailService {
 
     UserAuthPrincipal loadPrincipalByUserId(Long userId);
 
-    UserAuthPrincipal loadPrincipalByOpenId(String openId, Byte platformId);
+    UserAuthPrincipal loadPrincipalByOpenId(String openId);
 
     Set<String> queryRolesByUserId(Long userId);
 
