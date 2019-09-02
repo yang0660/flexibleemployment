@@ -3,8 +3,6 @@ package com.flexibleemployment.controller.manage;
 import com.flexibleemployment.dao.entity.WhiteList;
 import com.flexibleemployment.service.WhiteListService;
 import com.flexibleemployment.shiro.AuthIgnore;
-import com.flexibleemployment.utils.StringUtil;
-import com.flexibleemployment.utils.file.ExcelUtils;
 import com.flexibleemployment.vo.request.WhiteListDeleteReqVO;
 import com.flexibleemployment.vo.request.WhiteListDetailReqVO;
 import com.flexibleemployment.vo.request.WhiteListPageReqVO;
@@ -15,13 +13,11 @@ import com.flexibleemployment.vo.response.WhiteListRespVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.List;
 
 @RestController
 @Slf4j

@@ -2,9 +2,7 @@ package com.flexibleemployment.service;
 
 import com.flexibleemployment.dao.entity.UserAccount;
 import com.flexibleemployment.dao.mapper.UserAccountMapperExt;
-import com.flexibleemployment.enums.DeviceTypeEnum;
 import com.flexibleemployment.enums.PassWordStatusEnum;
-import com.flexibleemployment.shiro.ManageUserNamePasswordToken;
 import com.flexibleemployment.utils.ConvertUtils;
 import com.flexibleemployment.vo.response.LoginRespVO;
 import com.flexibleemployment.vo.response.ResultVO;

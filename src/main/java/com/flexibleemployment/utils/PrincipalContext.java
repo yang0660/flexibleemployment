@@ -1,13 +1,8 @@
 package com.flexibleemployment.utils;
 
-import com.flexibleemployment.dao.entity.User;
-import com.flexibleemployment.dao.entity.UserAccount;
 import com.flexibleemployment.shiro.UserAuthPrincipal;
-import com.flexibleemployment.vo.response.ResultVO;
 import com.google.common.base.Preconditions;
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.crypto.hash.Md5Hash;
-import org.springframework.util.StringUtils;
 
 import java.io.Serializable;
 
