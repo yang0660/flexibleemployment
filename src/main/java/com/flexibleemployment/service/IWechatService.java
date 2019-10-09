@@ -19,14 +19,13 @@ import java.util.Map;
 @Service
 @Slf4j
 public class IWechatService {
-    @Value("${wx.applet.wxAppid}")
-    private String wxAppid;
+//    @Value("${wx.applet.wxAppid}")
+    private String wxAppid="wxcf77273f875cf9ce";
 
-    @Value("${wx.applet.wxAppSecret}")
-    private String wxAppSecret;
+//    @Value("${wx.applet.wxAppSecret}")
+    private String wxAppSecret="0fd268a70bbaa3130303ae09113329c0";
 
     @Autowired
-    @Qualifier(value = "notLoadBalancedRestTemplate")
     private RestTemplate restTemplate;
 
     private final static String code2session = "https://api.weixin.qq.com/sns/jscode2session?appid=%s&secret=%s&js_code=%s&grant_type=authorization_code";

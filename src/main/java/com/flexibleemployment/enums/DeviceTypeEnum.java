@@ -12,7 +12,8 @@ import org.apache.commons.lang3.StringUtils;
 public enum DeviceTypeEnum {
     ANDROID_MOBILE("Android"),
     IOS_MOBILE("IOS"),
-    H5("H5");
+    H5("H5"),
+    MANAGER("manager");
     private String desc;
 
     public static DeviceTypeEnum enumOf(String desc) {

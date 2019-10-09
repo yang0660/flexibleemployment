@@ -84,6 +84,8 @@ public class ShiroConfiguration implements ApplicationContextAware {
         HashMap<String, Filter> filterMap = new LinkedHashMap<>();
         filterMap.put("authc", authenticatingFilter());
         shiroFilterFactoryBean.setFilters(filterMap);
+        //登录
+        shiroFilterFactoryBean.setLoginUrl("/manage/user/login");
         shiroFilterFactoryBean.setFilterChainDefinitionMap(loadFilterChainDefinitionMap());
         return shiroFilterFactoryBean;
     }
@@ -99,6 +101,8 @@ public class ShiroConfiguration implements ApplicationContextAware {
     private Map<String, String> loadFilterChainDefinitionMap() {
         HashMap<String, String> map = new LinkedHashMap<>();
         excludeAuthPaths.forEach(excludeAuthPath -> map.put(excludeAuthPath, "anon"));
+        //登出
+        map.put("/manage/user/logout","logout");
         map.put("/**", "authc");
         return map;
     }

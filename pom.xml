@@ -9,24 +9,24 @@
     <version>1.0.0</version>
     <packaging>jar</packaging>
 
-    <profiles>
-        <profile>
-            <id>default</id>
-            <properties>
-                <build.profile.id>default</build.profile.id>
-            </properties>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-                <jdk>1.8</jdk>
-            </activation>
-        </profile>
-        <profile>
-            <id>production</id>
-            <properties>
-                <build.profile.id>production</build.profile.id>
-            </properties>
-        </profile>
-    </profiles>
+    <!--<profiles>-->
+    <!--<profile>-->
+    <!--<id>default</id>-->
+    <!--<properties>-->
+    <!--<build.profile.id>default</build.profile.id>-->
+    <!--</properties>-->
+    <!--<activation>-->
+    <!--<activeByDefault>true</activeByDefault>-->
+    <!--<jdk>1.8</jdk>-->
+    <!--</activation>-->
+    <!--</profile>-->
+    <!--<profile>-->
+    <!--<id>production</id>-->
+    <!--<properties>-->
+    <!--<build.profile.id>production</build.profile.id>-->
+    <!--</properties>-->
+    <!--</profile>-->
+    <!--</profiles>-->
 
     <name>flexibleemployment-web</name>
     <description>flexibleemployment-web</description>
@@ -204,10 +204,10 @@
         </dependency>
 
 
-
     </dependencies>
 
     <build>
+        <sourceDirectory>src/main/java</sourceDirectory>
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
@@ -235,13 +235,60 @@
                     <include>**/*.txt</include>
                 </includes>
                 <filtering>true</filtering>
+                <targetPath>${project.build.directory}/config</targetPath>
             </resource>
         </resources>
         <plugins>
             <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <!-- 主程序入口main方法所在类 -->
+                        <manifest>
+                            <mainClass>com.flexibleemployment.FlexibleEmploymentApplication</mainClass>
+                            <addClasspath>true</addClasspath>
+                            <classpathPrefix>lib/</classpathPrefix>
+                        </manifest>
+                        <!-- (配置文件外置目录) -->
+                        <manifestEntries>
+                            <Class-Path>config/</Class-Path>
+                            <!--<Class-Path>${project.build.directory}/config/</Class-Path>-->
+                        </manifestEntries>
+                    </archive>
+                    <classesDirectory>
+                    </classesDirectory>
+                </configuration>
             </plugin>
+            <!-- 拷贝依赖的jar包到lib目录 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>
+                                ${project.build.directory}/lib
+                            </outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- 解决资源文件的编码问题 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>2.5</version>
+                <configuration>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+
             <plugin>
                 <groupId>org.mybatis.generator</groupId>
                 <artifactId>mybatis-generator-maven-plugin</artifactId>
@@ -261,5 +308,7 @@
             </plugin>
         </plugins>
     </build>
+
+
 
 </project>

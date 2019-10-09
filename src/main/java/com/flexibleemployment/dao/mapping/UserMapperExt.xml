@@ -8,6 +8,13 @@
     <include refid="com.flexibleemployment.dao.mapper.UserMapper.Base_Column_List"/>
   </sql>
 
+  <select id="selectByOpenId" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_user
+    where open_id = #{openId,jdbcType=VARCHAR}
+  </select>
+
   <select id="selectCount" parameterType="com.flexibleemployment.vo.request.UserPageReqVO"
           resultType="long">
     select

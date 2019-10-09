@@ -5,11 +5,12 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /**
- * 任务附件删除参数
+ * 订单管理新增参数
  */
 @Data
-@ApiModel(value = "任务附件删除参数")
-public class TaskAttachmentDeleteReqVO {
+@ApiModel(value = "领取任务")
+public class AddOrderReqVO {
     @ApiModelProperty(value = "任务ID")
     private Long taskId;
+
 }

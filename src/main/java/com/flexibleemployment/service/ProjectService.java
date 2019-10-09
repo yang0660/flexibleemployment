@@ -78,14 +78,14 @@ public class ProjectService extends BaseService<Long, Project, ProjectMapperExt>
      * @return
      */
     @Transactional
-    public ResultVO<Integer> update(ProjectReqVO reqVO) {
+    public ResultVO<String> update(ProjectReqVO reqVO) {
         Project project = ConvertUtils.convert(reqVO, Project.class);
         project.setUpdatedAt(new Date());
         Integer result = mapper.updateByPrimaryKeySelective(project);
         if (result == 0) {
             return ResultVO.validError("update is failed!");
         }
-        return ResultVO.success(result);
+        return ResultVO.success(result.toString());
 
     }
 

@@ -1,6 +1,8 @@
 package com.flexibleemployment.shiro;
 
+import com.flexibleemployment.enums.DeviceTypeEnum;
 import com.flexibleemployment.service.shiro.ManagerUserDetailService;
+import com.flexibleemployment.utils.BizException;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -79,6 +81,22 @@ public class ManageRealm extends AuthorizingRealm implements ApplicationListener
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
         ManageUserNamePasswordToken tk = (ManageUserNamePasswordToken) token;
         SimpleAuthenticationInfo authenticationInfo = null;
+
+
+        //后台登陆固定 admin / admin@123
+        if(tk.getDeviceType() == DeviceTypeEnum.MANAGER){
+            if(tk.getUsername().equals("admin") && new String(tk.getPassword()).equals("admin@123")){
+                UserAuthPrincipal userAuthPrincipal = new UserAuthPrincipal();
+                userAuthPrincipal.setDeviceType(DeviceTypeEnum.MANAGER);
+                userAuthPrincipal.setUserName("admin");
+                userAuthPrincipal.setReserve(DeviceTypeEnum.MANAGER.getDesc());
+                userAuthPrincipal.setPrincipal("admin");
+                authenticationInfo = new SimpleAuthenticationInfo(userAuthPrincipal, userAuthPrincipal.getCredentials(), REALM_NAME);
+                return authenticationInfo;
+            }
+            throw new BizException("0100","后台登陆错误，账号密码错误");
+        }
+
         UserAuthPrincipal userAuthPrincipal = managerUserDetailService.loadPrincipalByOpenId(String.valueOf(tk.getPrincipal()));
         if (userAuthPrincipal != null) {
             userAuthPrincipal.setDeviceType(tk.getDeviceType());

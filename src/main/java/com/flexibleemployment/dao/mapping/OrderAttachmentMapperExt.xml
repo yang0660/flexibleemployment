@@ -22,4 +22,13 @@
     is_deleted = 1
     where attachment_id = #{attachmentId}
   </update>
+
+  <update id="deleteByProjectId" parameterType="java.lang.Long">
+    update t_order_attachment
+    set
+    is_deleted = 1
+    where order_id = #{orderId}
+  </update>
+
+
 </mapper>

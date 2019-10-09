@@ -55,8 +55,8 @@ public class TaskAttachmentService extends BaseService<Long, TaskAttachment, Tas
      * @return
      */
     @Transactional
-    public ResultVO<Integer> delete(Long attachmentId) {
-        Integer result = mapper.delete(attachmentId);
+    public ResultVO<Integer> delete(Long taskId) {
+        Integer result = mapper.deleteByTaskId(taskId);
         if (result == 0) {
             return ResultVO.validError("delete is failed!");
         }

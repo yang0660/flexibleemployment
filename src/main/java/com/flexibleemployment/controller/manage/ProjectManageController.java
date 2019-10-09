@@ -75,7 +75,7 @@ public class ProjectManageController {
      */
     @PostMapping(value = "/update")
     @ApiOperation("修改")
-    public ResultVO<Integer> update(@RequestBody ProjectReqVO reqVO) {
+    public ResultVO<String> update(@RequestBody ProjectReqVO reqVO) {
         return projectService.update(reqVO);
 
     }

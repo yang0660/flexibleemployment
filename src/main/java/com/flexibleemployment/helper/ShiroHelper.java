@@ -1,5 +1,8 @@
 package com.flexibleemployment.helper;
 
+import com.flexibleemployment.shiro.ManageUserNamePasswordToken;
+import com.flexibleemployment.shiro.UserAuthPrincipal;
+import org.apache.shiro.subject.SimplePrincipalCollection;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ThreadContext;
 import org.apache.shiro.web.subject.WebSubject;
@@ -23,6 +26,12 @@ public class ShiroHelper {
             ThreadContext.bind(subject);
         }
         return subject;
+    }
 
+    public static String getSessionOpenId(){
+        Subject subject = ThreadContext.getSubject();
+        System.out.println(subject.getPrincipal().getClass());
+        UserAuthPrincipal userAuthPrincipal = (UserAuthPrincipal) subject.getPrincipal();
+        return userAuthPrincipal.getPrincipal();
     }
 }

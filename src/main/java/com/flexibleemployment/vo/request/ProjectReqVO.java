@@ -10,6 +10,9 @@ import lombok.Data;
 @Data
 @ApiModel(value = "项目管理新增/修改参数")
 public class ProjectReqVO {
+    @ApiModelProperty(value = "项目id")
+    private Long projectId;
+
     @ApiModelProperty(value = "项目名称")
     private String projectName;
 

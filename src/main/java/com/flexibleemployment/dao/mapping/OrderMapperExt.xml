@@ -85,6 +85,15 @@
     <result column="updated_at" jdbcType="TIMESTAMP" property="updatedAt" />
   </resultMap>
 
+  <resultMap id="ComplatedOrderMap" type="com.flexibleemployment.vo.response.ComplatedOrder">
+    <id column="order_id" jdbcType="BIGINT" property="orderId" />
+    <result column="task_id" jdbcType="VARCHAR" property="taskId" />
+    <result column="task_name" jdbcType="VARCHAR" property="taskName" />
+    <result column="amount" jdbcType="DECIMAL" property="amount" />
+    <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
+    <result column="projectDesc" jdbcType="VARCHAR" property="projectDesc" />
+  </resultMap>
+
   <select id="selectCountApp" parameterType="com.flexibleemployment.vo.request.OrderAppPageReqVO"
           resultType="long">
     select
@@ -133,19 +142,28 @@
   </select>
 
   <select id="selectSumAmount" parameterType="com.flexibleemployment.vo.request.OrderAmountReqVO"
-          resultType="DECIMAL">
+          resultType="java.math.BigDecimal">
     select
     sum(task.amount)
     from
     t_task task
     left join t_order ord on ord.task_id = task.task_id
-    left join t_user `user` on `user`.open_id = ord.open_id
-    <where>
-      ord.open_id = #{openId}
-      and ord.status = 3
-      and `user`.is_white_list = 1
-      and ord.is_deleted = 0
-    </where>
+    left join t_user t3 on t3.open_id = ord.open_id
+    where ord.open_id = #{openId}
+    and ord.status = 3
+    and t3.is_white_list = 1
+    and ord.is_deleted = 0
+  </select>
+
+  <select id="queryCompletedOrdser" parameterType="com.flexibleemployment.vo.request.OrderAmountReqVO"
+          resultMap="ComplatedOrderMap">
+    select
+    t1.order_id,t1.task_id,t2.amount,t2.task_name,t1.created_at,t3.project_name
+    from
+    t_order t1 LEFT JOIN t_task t2 on t1.task_id = t2.task_id
+    left JOIN t_project t3 on t2.project_id = t3.project_id
+    WHERE
+    t1.open_id = #{openId} and t1.status = 3  and t1.is_deleted = 0
   </select>
 
 

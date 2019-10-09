@@ -8,10 +8,7 @@ import com.flexibleemployment.dao.mapper.OrderMapperExt;
 import com.flexibleemployment.utils.ConvertUtils;
 import com.flexibleemployment.utils.SnowflakeIdWorker;
 import com.flexibleemployment.vo.request.*;
-import com.flexibleemployment.vo.response.OrderAppRespVO;
-import com.flexibleemployment.vo.response.OrderRespVO;
-import com.flexibleemployment.vo.response.PageResponseVO;
-import com.flexibleemployment.vo.response.ResultVO;
+import com.flexibleemployment.vo.response.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,6 +75,48 @@ public class OrderService extends BaseService<Long, Order, OrderMapperExt> {
         return ResultVO.success(mapper.selectSumAmount(reqVO));
     }
 
+    /**
+     * 查询以完成得订单列表
+     *
+     * @return
+     */
+    public ResultVO<List<ComplatedOrder>> queryCompletedOrdser(String openId) {
+        return ResultVO.success(mapper.queryCompletedOrdser(openId));
+    }
+
+    @Transactional
+    public ResultVO<Integer> add(Long taskId, String openId){
+        User user = userService.selectByPrimaryKey(openId);
+        if (user == null ||user.getIsWhiteList()==0) {
+            return ResultVO.validError("not a valid whiteList member");
+        }
+
+        //检查订单状态
+        Task task = taskService.selectByPrimaryKey(taskId);
+
+        if(task.getStatus().byteValue() != 1){
+            return ResultVO.validError("任务已经被领取");
+        }
+
+        Order order = new Order();
+        order.setTaskId(taskId);
+        order.setOrderId(snowflakeIdWorker.nextId());
+        order.setOpenId(user.getOpenId());
+        order.setStatus((byte) 1);
+//            order.setStatus(Byte.valueOf("1"));
+        order.setCreatedAt(new Date());
+        order.setUpdatedAt(new Date());
+        Integer result = mapper.insertSelective(order);
+        if (result == 0) {
+            return ResultVO.validError("save is failed!");
+        }
+        //已接单后，设置对应任务状态为2-已接单
+        Task task1 = new Task();
+        task1.setTaskId(order.getTaskId());
+        task1.setStatus((byte)2);
+        taskService.updateByPrimaryKeySelective(task1);
+        return ResultVO.success(result);
+    }
 
     /**
      * 新增

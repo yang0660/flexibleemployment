@@ -4,6 +4,8 @@ import com.flexibleemployment.dao.entity.Order;
 import com.flexibleemployment.vo.request.OrderAmountReqVO;
 import com.flexibleemployment.vo.request.OrderAppPageReqVO;
 import com.flexibleemployment.vo.request.OrderPageReqVO;
+import com.flexibleemployment.vo.response.ComplatedOrder;
+import org.apache.ibatis.annotations.Param;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -19,6 +21,8 @@ public interface OrderMapperExt extends OrderMapper{
     List<Order> selectListApp(OrderAppPageReqVO reqVO);
 
     BigDecimal selectSumAmount(OrderAmountReqVO reqVO);
+
+    List<ComplatedOrder> queryCompletedOrdser(@Param("openId") String openId);
 
     Integer delete(Long orderId);
 }

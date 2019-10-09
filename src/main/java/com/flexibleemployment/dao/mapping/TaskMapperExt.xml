@@ -10,6 +10,7 @@
 
   <resultMap id="TaskResultMap" type="com.flexibleemployment.vo.response.TaskRespVO">
     <id column="task_id" jdbcType="BIGINT" property="taskId" />
+    <result column="project_id" jdbcType="BIGINT" property="projectId" />
     <result column="task_name" jdbcType="VARCHAR" property="taskName" />
     <result column="project_name" jdbcType="VARCHAR" property="projectName" />
     <result column="task_goal" jdbcType="VARCHAR" property="taskGoal" />
@@ -20,6 +21,7 @@
     <result column="settlement_time" jdbcType="TIMESTAMP" property="settlementTime" />
     <result column="status" jdbcType="TINYINT" property="status" />
     <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
+    <result column="attachment_url" jdbcType="VARCHAR" property="attachmentUrl" />
   </resultMap>
 
   <select id="selectCount" parameterType="com.flexibleemployment.vo.request.TaskPageReqVO"
@@ -41,6 +43,7 @@
           resultMap="TaskResultMap">
     select
     task.task_id,
+    proj.project_id,
     task.task_name,
     proj.project_name,
     task.task_goal,
@@ -50,10 +53,12 @@
     task.deliver_time,
     task.settlement_time,
     task.status,
-    task.created_at
+    task.created_at,
+    ta1.attachment_url
     from
     t_task task
     left join t_project proj on proj.project_id = task.project_id
+    left join t_task_attachment ta1 on ta1.task_id = task.task_id
     <where>
       <if test="taskName!=null and taskName!=''">
         task.task_name like concat('%',#{taskName},'%')
@@ -63,17 +68,15 @@
     limit #{offset,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
   </select>
 
-  <update id="delete" parameterType="java.lang.Long">
-    update t_task
-    set
-    is_deleted = 1
-    where task_id = #{taskId}
-  </update>
+  <delete id="delete" parameterType="java.lang.Long">
+    delete from t_task where task_id = #{taskId}
+  </delete>
 
   <select id="selectByTaskId" parameterType="com.flexibleemployment.vo.request.TaskAppReqVO"
           resultMap="TaskResultMap">
     select
     task.task_id,
+    proj.project_id,
     task.task_name,
     proj.project_name,
     task.task_goal,
@@ -83,10 +86,12 @@
     task.deliver_time,
     task.settlement_time,
     task.status,
-    task.created_at
+    task.created_at,
+    ta1.attachment_url
     from
     t_task task
     left join t_project proj on proj.project_id = task.project_id
+    left join t_task_attachment ta1 on ta1.task_id = task.task_id
     <where>
       <if test="taskId!=''">
         and  task.task_id = #{taskId}
@@ -100,7 +105,13 @@
     <result column="task_name" jdbcType="VARCHAR" property="taskName" />
   </resultMap>
 
-  <select id="selectByProjectId" parameterType="com.flexibleemployment.vo.request.TaskAppReqVO" resultMap="TaskNameResultMap">
+  <resultMap id="TaskNameResultMap0" type="com.flexibleemployment.vo.response.TaskNameRespVO">
+    <id column="task_id" jdbcType="BIGINT" property="taskId" />
+    <result column="task_name" jdbcType="VARCHAR" property="taskName" />
+    <result column="status" jdbcType="TINYINT" property="status" />
+  </resultMap>
+
+  <select id="selectByProjectId" parameterType="java.lang.String" resultMap="TaskNameResultMap">
     select
     task_id,
     task_name
@@ -115,6 +126,16 @@
       </if>
       and is_deleted = 0
     </where>
+  </select>
 
+  <select id="selectByProjectId0" parameterType="com.flexibleemployment.vo.request.TaskAppReqVO" resultMap="TaskNameResultMap0">
+    select
+    task_id,
+    task_name,
+    status
+    from
+    t_task
+    where
+    project_id = #{projectId} and is_deleted = 0
   </select>
 </mapper>

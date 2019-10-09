@@ -16,10 +16,16 @@
     and is_deleted = 0
   </select>
 
+  <delete id="deleteByTaskId" parameterType="java.lang.Long">
+    delete from t_task_attachment where task_id=#{taskId}
+  </delete>
+
+
+
   <update id="delete" parameterType="java.lang.Long">
     update t_task_attachment
     set
     is_deleted = 1
-    where attachment_id = #{attachmentId}
+    where task_id = #{attachmentId}
   </update>
 </mapper>

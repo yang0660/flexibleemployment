@@ -16,6 +16,9 @@ public class TaskRespVO {
     @ApiModelProperty(value = "任务ID")
     private Long taskId;
 
+    @ApiModelProperty(value = "项目ID")
+    private Long projectId;
+
     @ApiModelProperty(value = "任务名称")
     private String taskName;
 
@@ -45,4 +48,8 @@ public class TaskRespVO {
 
     @ApiModelProperty(value = "创建时间")
     private Date createdAt;
+
+    @ApiModelProperty(value = "附件地址")
+    private String attachmentUrl;
+
 }

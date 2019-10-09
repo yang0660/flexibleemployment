@@ -15,4 +15,7 @@ public class TaskNameRespVO {
 
     @ApiModelProperty(value = "任务名称")
     private String taskName;
+
+    @ApiModelProperty(value = "任务状态")
+    private String status;
 }

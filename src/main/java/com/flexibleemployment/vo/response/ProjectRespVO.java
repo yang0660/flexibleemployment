@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * 项目管理列表查询
@@ -24,4 +25,7 @@ public class ProjectRespVO {
 
     @ApiModelProperty(value = "创建时间")
     private Date createdAt;
+
+    @ApiModelProperty(value = "任务列表")
+    private List<TaskNameRespVO> task;
 }

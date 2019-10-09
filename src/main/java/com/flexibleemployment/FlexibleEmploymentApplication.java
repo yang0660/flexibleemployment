@@ -7,7 +7,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 @MapperScan(basePackages = {"com.flexibleemployment.dao.mapper"})
 public class FlexibleEmploymentApplication {
-
     public static void main(String[] args) {
         SpringApplication.run(FlexibleEmploymentApplication.class, args);
     }

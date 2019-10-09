@@ -27,4 +27,11 @@ public class UserTokenRespVO {
 
     @ApiModelProperty(value = "sessionKey")
     private String sessionKey;
+
+    @ApiModelProperty(value = "是否绑定手机号: false未绑定，true已经绑定")
+    private boolean bindMobile;
+
+    @ApiModelProperty(value = "是否是会员")
+    private boolean member;
+
 }

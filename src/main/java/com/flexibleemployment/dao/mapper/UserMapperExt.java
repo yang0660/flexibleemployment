@@ -7,6 +7,10 @@ import java.util.List;
 
 public interface UserMapperExt extends UserMapper{
 
+
+
+    User selectByOpenId(String openId);
+
     long selectCount(UserPageReqVO reqVO);
 
     List<User> selectList(UserPageReqVO reqVO);

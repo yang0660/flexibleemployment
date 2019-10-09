@@ -72,4 +72,18 @@ public class OrderAttachmentService extends BaseService<Long, OrderAttachment, O
         return ResultVO.success(result);
     }
 
+    /**
+     * 删除
+     *
+     * @return
+     */
+    @Transactional
+    public ResultVO<Integer> deleteByOrderId(Long orderId) {
+        Integer result = mapper.deleteByProjectId(orderId);
+        if (result == 0) {
+            return ResultVO.validError("delete is failed!");
+        }
+        return ResultVO.success(result);
+    }
+
 }

@@ -40,13 +40,17 @@ public class UserService extends BaseService<String, User, UserMapperExt>{
     }
 
     /**
-     * 列表查询-分页
      *
      * @param
      * @return
      */
     public User query(String openId) {
-        return mapper.selectByPrimaryKey(openId);
+        try {
+            return mapper.selectByPrimaryKey(openId);
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
     }
 
 
@@ -78,6 +82,17 @@ public class UserService extends BaseService<String, User, UserMapperExt>{
     public Integer update(UserReqVO reqVO) {
         User user = ConvertUtils.convert(reqVO, User.class);
         user.setUpdatedAt(new Date());
+        return mapper.updateByPrimaryKeySelective(user);
+    }
+
+    @Transactional
+    public Integer update0(UserReqVO reqVO) {
+        User user = ConvertUtils.convert(reqVO, User.class);
+        user.setUpdatedAt(new Date());
+        WhiteList whiteList =  whiteListService.queryByPrimaryKey(reqVO.getMobile());
+        if (whiteList!=null) {
+            user.setIsWhiteList((byte)1);
+        }
         return mapper.updateByPrimaryKeySelective(user);
     }
 

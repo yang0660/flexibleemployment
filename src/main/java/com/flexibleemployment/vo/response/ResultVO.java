@@ -56,6 +56,10 @@ public class ResultVO<T> {
         return new ResultVO<>(SUCCESS_CODE, data, message, null, null);
     }
 
+    public static <T> ResultVO<T> error(String code, String message) {
+        return new ResultVO<>(code, null, message, null, null);
+    }
+
     /**
      * 校验错误
      *

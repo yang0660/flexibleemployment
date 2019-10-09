@@ -88,54 +88,64 @@ public class PermissionInterceptorAdapter extends HandlerInterceptorAdapter {
             boolean isPermission = false;
             boolean isRole = false;
             Subject currentUser = ShiroHelper.getSubject(request, response);
-            if (currentUser != null && currentUser.getPrincipal() != null) {
-                // shiro鉴权
-                //没有定义资源名称
-                if (permissionArray == null && roleArray == null) {
-                    return true;
-                }
-                if (permissionArray != null) {
-                    for (String permission : permissionArray) {
-                        if (currentUser.isPermitted(permission)) {
-                            isPermission = true;
-                            break;
-                        }
+
+            if (currentUser == null) {
+                ResultVO resultVO = ResultVO.validError("会话已过期,请重新登录");
+                resultVO.setRespCode("1009");
+                print(response,resultVO);
+                return false;
+            }
+
+            // shiro鉴权
+            //没有定义资源名称
+            if (permissionArray == null && roleArray == null) {
+                return true;
+            }
+            if (permissionArray != null) {
+                for (String permission : permissionArray) {
+                    if (currentUser.isPermitted(permission)) {
+                        isPermission = true;
+                        break;
                     }
                 }
-                if (roleArray != null) {
-                    for (String role : roleArray) {
-                        if (currentUser.hasRole(role)) {
-                            isRole = true;
-                            break;
-                        }
+            }
+            if (roleArray != null) {
+                for (String role : roleArray) {
+                    if (currentUser.hasRole(role)) {
+                        isRole = true;
+                        break;
                     }
                 }
             }
 
+
             if (isPermission || isRole) {
                 return true;
             } else {
-                response.setContentType("text/html;charset=UTF8");
-
-                PrintWriter out = null;
-                try {
-                    out = response.getWriter();
-                    ResultVO resultVO = ResultVO.validError("无权限操作!");
-                    resultVO.setRespCode(ResultVO.NOPERMISSION_ERROR_CODE);
-                    out.println(JSONObject.toJSON(resultVO));
-                } catch (IOException e) {
-                    LOGGER.error("Exception:", e);
-                    e.printStackTrace();
-                }
-
-                out.flush();
-                out.close();
+                ResultVO resultVO = ResultVO.validError("无权限操作!");
+                resultVO.setRespCode(ResultVO.NOPERMISSION_ERROR_CODE);
+                print(response,resultVO);
                 return false;
                 // throw new AuthorizationException();
             }
         } else {
             return false;
         }
+    }
+
+    private void print(HttpServletResponse response,ResultVO resultVO){
+        response.setContentType("text/html;charset=UTF8");
+        PrintWriter out = null;
+        try {
+            out = response.getWriter();
+
+            out.println(JSONObject.toJSON(resultVO));
+        } catch (IOException e) {
+            LOGGER.error("Exception:", e);
+            e.printStackTrace();
+        }
+        out.flush();
+        out.close();
     }
 
     @Override

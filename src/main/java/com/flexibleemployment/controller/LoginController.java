@@ -1,9 +1,13 @@
 package com.flexibleemployment.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.flexibleemployment.dao.entity.User;
+import com.flexibleemployment.dao.entity.WhiteList;
 import com.flexibleemployment.enums.DeviceTypeEnum;
+import com.flexibleemployment.helper.ShiroHelper;
 import com.flexibleemployment.service.IWechatService;
 import com.flexibleemployment.service.UserService;
+import com.flexibleemployment.service.WhiteListService;
 import com.flexibleemployment.shiro.AuthIgnore;
 import com.flexibleemployment.shiro.ManageUserNamePasswordToken;
 import com.flexibleemployment.utils.ConvertUtils;
@@ -28,7 +32,7 @@ import java.util.Map;
 
 
 @RestController
-@RequestMapping("app/login")
+@RequestMapping("/app/login")
 @Api(tags = {"用户认证登录模块"})
 @Slf4j
 public class LoginController {
@@ -38,6 +42,10 @@ public class LoginController {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    WhiteListService whiteListService;
+
 
     /**
      * 获取api访问令牌
@@ -52,14 +60,28 @@ public class LoginController {
         //取得code，解密出openId，unionId，sessionKey
         Map<String, String> sessionMap = iWechatService.wxCodeToSession(wxcode.getWxcode());
         String openId = sessionMap.get("openid");
+//        String openId="12345";
         //判断openId在用户表里是否已存在，不存在则以openId创建一个空用户，
         User user = userService.query(openId);
-        UserTokenRespVO respVO = ConvertUtils.convert(user, UserTokenRespVO.class);
+        UserTokenRespVO respVO = null;
         if (user == null) {
+            respVO = new UserTokenRespVO();
             UserReqVO reqVO = new UserReqVO();
             reqVO.setOpenId(openId);
             Integer add = userService.add(reqVO);
+            respVO.setMember(false);
+            respVO.setBindMobile(false);
             respVO.setOpenId(openId);
+        }else{
+            respVO = ConvertUtils.convert(user, UserTokenRespVO.class);
+            if(null == user.getMobile() || user.getMobile().equals("")){
+                respVO.setBindMobile(false);
+            }else{
+                respVO.setBindMobile(true);
+            }
+            if(null != user.getIsWhiteList()){
+                respVO.setMember((byte)1 == user.getIsWhiteList().byteValue()?true:false);
+            }
         }
         //获取token
         Subject subject = SecurityUtils.getSubject();
@@ -70,6 +92,7 @@ public class LoginController {
         respVO.setToken(sessionId);
 
         respVO.setSessionKey(sessionMap.get("session_key"));
+//        respVO.setSessionKey("asss");
         return ResultVO.success(respVO);
     }
 
@@ -88,7 +111,30 @@ public class LoginController {
         String session_key = reqVO.getSession_key();
         String iv = reqVO.getIv();
         //解密出手机号码
-        String mobile = util.deciphering(encryptedData, session_key, iv);
+        String mobile=null;
+        try {
+            String res = util.decryptS5(encryptedData, "utf-8",session_key, iv);
+            if(null == res || res.isEmpty()){
+                return ResultVO.error("0002","手机号获取错误");
+            }
+            JSONObject object = JSONObject.parseObject(res);
+            mobile = object.getString("phoneNumber");
+
+            if(null!=mobile && !mobile.isEmpty()){
+                String openId = ShiroHelper.getSessionOpenId();
+                log.debug("解密手机号:openid="+openId);
+                //更新用户信息
+                UserReqVO userReqVO = new UserReqVO();
+                userReqVO.setMobile(mobile);
+                userReqVO.setOpenId(openId);
+                Integer integer = userService.update0(userReqVO);
+                log.debug("更新用户信息：手机号成功:"+integer);
+            }
+
+            log.info("解析手机号："+mobile);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         UserReqVO user = new UserReqVO();
         user.setMobile(mobile);
         //更新用户的手机号码字段

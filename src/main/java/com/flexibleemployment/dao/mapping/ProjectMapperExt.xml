@@ -47,12 +47,9 @@
     is_deleted = 0
   </select>
 
-  <update id="delete" parameterType="java.lang.Long">
-    update t_project
-    set
-    is_deleted = 1
-    where project_id = #{projectId}
-  </update>
+  <delete id="delete" parameterType="java.lang.Long">
+    delete from t_project where project_id = #{projectId}
+  </delete>
 
 
 </mapper>

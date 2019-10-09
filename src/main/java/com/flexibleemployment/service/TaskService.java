@@ -98,6 +98,20 @@ public class TaskService extends BaseService<Long, Task, TaskMapperExt> {
     }
 
     /**
+     * 前端任务列表查询-项目ID
+     *
+     * @return
+     */
+    @Transactional
+    public ResultVO<List<TaskNameRespVO>> queryByProjectId0(TaskAppReqVO reqVO) {
+        List<TaskNameRespVO> respVO = mapper.selectByProjectId0(reqVO);
+        if (respVO.size() == 0) {
+            return ResultVO.success(new ArrayList<TaskNameRespVO>());
+        }
+        return ResultVO.success(respVO);
+    }
+
+    /**
      * 新增
      *
      * @return

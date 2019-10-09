@@ -46,7 +46,7 @@ public class TaskAttachmentManageController {
     @PostMapping(value = "/delete")
     @ApiOperation("删除")
     public ResultVO<Integer> delete(@RequestBody TaskAttachmentDeleteReqVO reqVO) {
-        return taskAttachmentService.delete(reqVO.getAttachmentId());
+        return taskAttachmentService.delete(reqVO.getTaskId());
     }
 
 }

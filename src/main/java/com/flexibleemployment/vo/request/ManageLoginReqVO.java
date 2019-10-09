@@ -11,9 +11,6 @@ import lombok.Data;
 @ApiModel(value = "登录参数")
 public class ManageLoginReqVO {
 
-    @ApiModelProperty("用户ID")
-    private Long userId;
-
     @ApiModelProperty("用户名")
     private String userName;
 
